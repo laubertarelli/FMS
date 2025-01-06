@@ -1,5 +1,5 @@
 ﻿using Backend.Dtos.File;
-using Backend.Interfaces;
+using Backend.Interfaces.Services;
 using Backend.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +10,15 @@ namespace Backend.Controllers
     [Authorize]
     [ApiController]
     [Route("files")]
-    public class FileController(IFileRepository repo) : ControllerBase
+    public class FileController(IFileService service) : ControllerBase
     {
+        string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
         [HttpPost]
         [Authorize(Policy = "CreatePolicy")]
         public async Task<IActionResult> Create([FromBody] RequestFileDto fileDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var fileModel = fileDto.ToFileFromRequestDto(userId);
-            await repo.CreateAsync(fileModel);
+            var fileModel = await service.CreateAsync(fileDto, UserId);
             return CreatedAtAction(nameof(GetById), new { id = fileModel.Id }, fileModel.ToFileDto());
         }
 
@@ -26,50 +26,36 @@ namespace Backend.Controllers
         [Authorize(Policy = "UpdatePolicy")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] RequestFileDto fileDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var fileModel = await repo.UpdateAsync(id, fileDto, userId);
-            if (fileModel is null)
-            {
-                return NotFound();
-            }
-            return Ok(fileModel.ToFileDto());
+            var file = await service.UpdateAsync(id, fileDto, UserId);
+            return (file is null) ? NotFound() : Ok(file);
         }
 
         [HttpDelete]
         [Authorize(Policy = "DeletePolicy")]
         public async Task<IActionResult> Delete(int id)
         {
-            var file = await repo.DeleteAsync(id);
-            if (file is null)
-            {
-                return NotFound();
-            }
-            return NoContent();
+            var result = await service.DeleteAsync(id);
+            return result ? NoContent() : NotFound();
         }
 
         [HttpGet("{page:int}")]
         public async Task<IActionResult> GetAll([FromRoute] int page)
         {
-            var files = await repo.GetAllAsync(page);
-            var result = files.Select(f => f.ToFileDto()).ToList();
-            return Ok(result);
+            var files = await service.GetAllAsync(page);
+            return Ok(files);
         }
 
         [HttpGet("view/{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var file = await repo.GetByIdAsync(id);
-            if (file is null)
-            {
-                return NotFound();
-            }
-            return Ok(file.ToFileDto());
+            var file = await service.GetByIdAsync(id);
+            return (file is null) ? NotFound() : Ok(file);
         }
 
         [HttpGet("count")]
         public async Task<IActionResult> CountAll()
         {
-            int count = await repo.CountAllAsync();
+            int count = await service.CountAllAsync();
             return Ok(count);
         }
     }

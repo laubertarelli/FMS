@@ -30,5 +30,15 @@ namespace Backend.Mappers
                 LastName = userDto.LastName
             };
         }
+
+        public static NewUserDto ToNewUserDto(this User userModel, string token)
+        {
+            return new NewUserDto
+            {
+                UserName = userModel.UserName!,
+                Email = userModel.Email!,
+                Token = token
+            };
+        }
     }
 }

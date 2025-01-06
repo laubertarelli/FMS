@@ -4,18 +4,24 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using File = Backend.Models.File;
 
 namespace Backend.Data
 {
-    public class FmsContext : IdentityDbContext<User>
+    public class FmsContext(IConfiguration configuration) : IdentityDbContext<User>
     {
         public DbSet<File> Files { get; set; }
         public DbSet<Procedure> Procedures { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("data source=Database.sqlite");
+            optionsBuilder.ConfigureWarnings(w =>
+            {
+                w.Ignore(RelationalEventId.PendingModelChangesWarning);
+                w.Ignore(RelationalEventId.NonTransactionalMigrationOperationWarning);
+            });
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgreSQLConnection"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -68,12 +74,12 @@ namespace Backend.Data
             {
                 if (entry is { State: EntityState.Added, Entity: ITimestampable newTimestampable, })
                 {
-                    newTimestampable.CreatedOn = DateTime.Now;
-                    newTimestampable.UpdatedOn = DateTime.Now;
+                    newTimestampable.CreatedOn = DateTime.Now.ToUniversalTime();
+                    newTimestampable.UpdatedOn = DateTime.Now.ToUniversalTime();
                 }
                 else if (entry is { State: EntityState.Modified, Entity: ITimestampable editedTimestampable, })
                 {
-                    editedTimestampable.UpdatedOn = DateTime.Now;
+                    editedTimestampable.UpdatedOn = DateTime.Now.ToUniversalTime();
                 }
             }
 

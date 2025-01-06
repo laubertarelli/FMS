@@ -46,12 +46,13 @@ namespace Backend.Data
 
         public async Task<Procedure?> GetByIdAsync(int id)
         {
-            return await context.Procedures.FirstOrDefaultAsync(p => p.Id == id);
+            return await context.Procedures.Include(p => p.File).Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Procedure>> GetByFileIdAsync(int fileId, int page)
         {
             return await context.Procedures
+                .Include(p => p.File).Include(p => p.User)
                 .Where(p => p.FileId == fileId)
                 .Skip((page - 1) * 5)
                 .Take(5)
@@ -61,6 +62,7 @@ namespace Backend.Data
         public async Task<List<Procedure>> GetByLabelAsync(ProcedureLabel label, int page)
         {
             return await context.Procedures
+                .Include(p => p.File).Include(p => p.User)
                 .Where(p => p.Label == label)
                 .Skip((page - 1) * 5)
                 .Take(5)
@@ -70,6 +72,7 @@ namespace Backend.Data
         public async Task<List<Procedure>> GetAllAsync(int page)
         {
             return await context.Procedures
+                .Include(p => p.File).Include(p => p.User)
                 .Skip((page - 1) * 5)
                 .Take(5)
                 .ToListAsync();

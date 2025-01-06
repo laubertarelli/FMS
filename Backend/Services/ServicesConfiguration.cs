@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
 using Backend.Interfaces;
+using Backend.Interfaces.Services;
 using Backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -13,12 +14,15 @@ namespace Backend.Services
     {
         public static IServiceCollection AddDependencies(this IServiceCollection services)
         {
-            services.AddDbContext<FmsContext>()
+            services.AddEntityFrameworkNpgsql().AddDbContext<FmsContext>()
                     .AddTransient<IFileRepository, FileRepository>()
                     .AddTransient<IProcedureRepository, ProcedureRepository>()
                     .AddTransient<IStateChanger, StateChanger>()
                     .AddTransient<IUpdateStateService, UpdateStateService>()
-                    .AddTransient<ITokenService, TokenService>();
+                    .AddTransient<ITokenService, TokenService>()
+                    .AddTransient<IFileService, FileService>()
+                    .AddTransient<IProcedureService, ProcedureService>()
+                    .AddTransient<IUserService, UserService>();
             return services;
         }
 

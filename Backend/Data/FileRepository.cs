@@ -14,16 +14,16 @@ namespace Backend.Data
             return file;
         }
 
-        public async Task<File?> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var file = await context.Files.FirstOrDefaultAsync(f => f.Id == id);
             if (file is null)
             {
-                return null;
+                return false;
             }
             context.Files.Remove(file);
             await context.SaveChangesAsync();
-            return file;
+            return true;
         }
 
         public async Task<File?> UpdateAsync(int id, RequestFileDto fileDto, string userId)
@@ -46,6 +46,7 @@ namespace Backend.Data
         {
             return await context.Files
                 .Include(f => f.Procedures)
+                .Include(f => f.User)
                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 
@@ -53,6 +54,7 @@ namespace Backend.Data
         {
             return await context.Files
                 .Include(f => f.Procedures)
+                .Include(f => f.User)
                 .Skip((page - 1) * 5)
                 .Take(5)
                 .ToListAsync();

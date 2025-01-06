@@ -1,6 +1,6 @@
 ﻿using Backend.Dtos.Procedure;
 using Backend.Enums;
-using Backend.Interfaces;
+using Backend.Interfaces.Services;
 using Backend.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +11,15 @@ namespace Backend.Controllers
     [Authorize]
     [ApiController]
     [Route("procedures")]
-    public class ProcedureController(IProcedureRepository repo, IUpdateStateService stateService) : ControllerBase
+    public class ProcedureController(IProcedureService service) : ControllerBase
     {
+        string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
         [HttpPost]
         [Authorize(Policy = "CreatePolicy")]
         public async Task<IActionResult> Create([FromBody] RequestProcedureDto procedureDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var procedureModel = procedureDto.ToProcedureFromRequestDto(userId);
-            await repo.CreateAsync(procedureModel);
-            await stateService.UpdateState(procedureModel.FileId, userId);
+            var procedureModel = await service.CreateAsync(procedureDto, UserId);
             return CreatedAtAction(nameof(GetById), new { id = procedureModel.Id }, procedureModel.ToProcedureDto());
         }
 
@@ -28,83 +27,64 @@ namespace Backend.Controllers
         [Authorize(Policy = "UpdatePolicy")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] RequestProcedureDto procedureDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var procedureModel = await repo.UpdateAsync(id, procedureDto, userId);
-            if (procedureModel is null)
-            {
-                return NotFound();
-            }
-            await stateService.UpdateState(procedureModel.FileId, userId);
-            return Ok(procedureModel.ToProcedureDto());
+            var procedureModel = await service.UpdateAsync(id, procedureDto, UserId);
+            return (procedureModel is null) ? NotFound() : Ok(procedureModel);
         }
 
         [HttpDelete]
         [Authorize(Policy = "DeletePolicy")]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var procedure = await repo.DeleteAsync(id);
-            if (procedure is null)
-            {
-                return NotFound();
-            }
-            await stateService.UpdateState(procedure.FileId, userId);
-            return NoContent();
+            var result = await service.DeleteAsync(id, UserId);
+            return result ? NoContent() : NotFound();
         }
 
         [HttpGet("{page:int}")]
         public async Task<IActionResult> GetAll([FromRoute] int page)
         {
-            var procedures = await repo.GetAllAsync(page);
-            var result = procedures.Select(p => p.ToProcedureDto()).ToList();
-            return Ok(result);
+            var procedures = await service.GetAllAsync(page);
+            return Ok(procedures);
         }
 
         [HttpGet("view/{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var procedure = await repo.GetByIdAsync(id);
-            if (procedure is null)
-            {
-                return NotFound();
-            }
-            return Ok(procedure.ToProcedureDto());
+            var procedure = await service.GetByIdAsync(id);
+            return (procedure is null) ? NotFound() : Ok(procedure);
         }
 
         [HttpGet("file/{fileId:int}/{page:int}")]
         public async Task<IActionResult> GetByFileId([FromRoute] int fileId, [FromRoute] int page)
         {
-            var procedures = await repo.GetByFileIdAsync(fileId, page);
-            var result = procedures.Select(p => p.ToProcedureDto()).ToList();
-            return Ok(result);
+            var procedures = await service.GetByFileIdAsync(fileId, page);
+            return Ok(procedures);
         }
 
         [HttpGet("label/{labelId:int}/{page:int}")]
         public async Task<IActionResult> GetByLabel([FromRoute] int labelId, [FromRoute] int page)
         {
-            var procedures = await repo.GetByLabelAsync((ProcedureLabel)labelId, page);
-            var result = procedures.Select(p => p.ToProcedureDto()).ToList();
-            return Ok(result);
+            var procedures = await service.GetByLabelAsync((ProcedureLabel)labelId, page);
+            return Ok(procedures);
         }
 
         [HttpGet("count")]
         public async Task<IActionResult> CountAll()
         {
-            var count = await repo.CountAllAsync();
+            var count = await service.CountAllAsync();
             return Ok(count);
         }
 
         [HttpGet("count/file/{fileId:int}")]
         public async Task<IActionResult> CountByFileId([FromRoute] int fileId)
         {
-            var count = await repo.CountByFileIdAsync(fileId);
+            var count = await service.CountByFileIdAsync(fileId);
             return Ok(count);
         }
 
         [HttpGet("count/label/{labelId:int}")]
         public async Task<IActionResult> CountByLabel([FromRoute] int labelId)
         {
-            var count = await repo.CountByLabelAsync((ProcedureLabel)labelId);
+            var count = await service.CountByLabelAsync((ProcedureLabel)labelId);
             return Ok(count);
         }
     }

@@ -1,10 +1,12 @@
 using Backend.Services;
+using dotenv.net;
 using System.Text.Json.Serialization;
 
+DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
-    .AddNewtonsoftJson() // This line requires the above using directive
+    .AddNewtonsoftJson()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDependencies();

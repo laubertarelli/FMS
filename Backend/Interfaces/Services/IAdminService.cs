@@ -10,6 +10,6 @@ namespace Backend.Interfaces.Services
         Task<List<UserDto>> GetAll(int page);
         Task<UserDto?> GetById(string id);
         Task<int> CountAll();
-        Task<List<Claim>?> ManageUserClaims(AdminClaimsDto claimsDto);
+        Task<IList<Claim>?> ManageUserClaims(AdminClaimsDto claimsDto);
     }
 }

@@ -14,8 +14,7 @@ namespace Backend.Mappers
                 CreatedOn = procedureModel.CreatedOn,
                 UpdatedOn = procedureModel.UpdatedOn,
                 FileId = procedureModel.FileId,
-                // If model's user is null, a user with a messagge "User not found" is assigned, located in the FirstName prop
-                UserId = procedureModel.UserId
+                UserFullName = procedureModel.User?.FullName ?? "Not Found"
             };
         }
 

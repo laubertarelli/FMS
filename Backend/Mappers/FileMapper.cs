@@ -14,7 +14,7 @@ namespace Backend.Mappers
                 CreatedOn = fileModel.CreatedOn,
                 UpdatedOn = fileModel.UpdatedOn,
                 Procedures = fileModel.Procedures.Select(p => p.ToProcedureDto()).ToList(),
-                UserId = fileModel.UserId
+                UserFullName = fileModel.User?.FullName ?? "Not Found"
             };
         }
 

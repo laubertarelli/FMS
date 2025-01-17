@@ -11,16 +11,13 @@ namespace Backend.Mappers
             {
                 Username = userModel.UserName!,
                 Email = userModel.Email!,
-                FirstName = userModel.FirstName,
-                LastName = userModel.LastName,
-                CreatedOn = userModel.CreatedOn,
-                UpdatedOn = userModel.UpdatedOn,
+                FullName = userModel.FullName,
                 Files = userModel.Files.Select(f => f.ToFileDto()).ToList(),
                 Procedures = userModel.Procedures.Select(p => p.ToProcedureDto()).ToList()
             };
         }
 
-        public static User FromSignupToUser(this SignupUserDto userDto)
+        public static User ToUserFromSignup(this SignupUserDto userDto)
         {
             return new User
             {

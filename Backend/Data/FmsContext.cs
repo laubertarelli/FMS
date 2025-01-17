@@ -21,7 +21,7 @@ namespace Backend.Data
                 w.Ignore(RelationalEventId.PendingModelChangesWarning);
                 w.Ignore(RelationalEventId.NonTransactionalMigrationOperationWarning);
             });
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgreSQLConnection"));
+            optionsBuilder.UseNpgsql(configuration["POSTGRES_CONNECTION"]);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

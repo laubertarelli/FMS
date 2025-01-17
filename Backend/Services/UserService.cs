@@ -1,5 +1,4 @@
-﻿using Backend.Data;
-using Backend.Dtos.User;
+﻿using Backend.Dtos.User;
 using Backend.Interfaces;
 using Backend.Interfaces.Services;
 using Backend.Mappers;
@@ -9,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services
 {
-    public class UserService(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService, FmsContext context) : IUserService
+    public class UserService(UserManager<User> userManager, SignInManager<User> signInManager, ITokenService tokenService) : IUserService
     {
         public async Task<NewUserDto?> Login(LoginUserDto loginDto)
         {
@@ -50,7 +49,7 @@ namespace Backend.Services
 
         public async Task<NewUserDto?> Signup(SignupUserDto userDto)
         {
-            var userModel = userDto.FromSignupToUser();
+            var userModel = userDto.ToUserFromSignup();
             var createdUser = await userManager.CreateAsync(userModel, userDto.Password);
             if (!createdUser.Succeeded)
             {

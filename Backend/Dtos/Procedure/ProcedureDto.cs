@@ -9,6 +9,6 @@ namespace Backend.Dtos.Procedure
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
         public int FileId { get; set; }
-        public string UserId { get; set; } = null!;
+        public string UserFullName { get; set; } = "";
     }
 }

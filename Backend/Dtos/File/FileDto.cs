@@ -10,6 +10,6 @@ namespace Backend.Dtos.File
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
         public List<ProcedureDto> Procedures { get; set; } = [];
-        public string UserId { get; set; } = null!;
+        public string UserFullName { get; set; } = "";
     }
 }

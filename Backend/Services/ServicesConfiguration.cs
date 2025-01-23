@@ -22,7 +22,8 @@ namespace Backend.Services
                     .AddTransient<ITokenService, TokenService>()
                     .AddTransient<IFileService, FileService>()
                     .AddTransient<IProcedureService, ProcedureService>()
-                    .AddTransient<IUserService, UserService>();
+                    .AddTransient<IUserService, UserService>()
+                    .AddTransient<IAdminService, AdminService>();
             return services;
         }
 
@@ -103,6 +104,20 @@ namespace Backend.Services
                         },
                         new string[]{}
                     }
+                });
+            });
+            return services;
+        }
+
+        public static IServiceCollection AddMyCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyOrigin();
                 });
             });
             return services;

@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace Backend.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("files")]
     public class FileController(IFileService service) : ControllerBase

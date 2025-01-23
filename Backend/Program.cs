@@ -5,14 +5,15 @@ using System.Text.Json.Serialization;
 DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers()
+builder.Services.AddEndpointsApiExplorer()
+    .AddDependencies()
+    .AddIdentity()
+    .AddSwagger()
+    .AddMyCors()
+    .AddJwtAuthentication(builder.Configuration)
+    .AddControllers()
     .AddNewtonsoftJson()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDependencies();
-builder.Services.AddIdentity();
-builder.Services.AddSwagger();
-builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -23,6 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

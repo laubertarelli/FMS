@@ -10,7 +10,7 @@ namespace Backend.Mappers
             return new ProcedureDto
             {
                 Content = procedureModel.Content,
-                Label = procedureModel.Label,
+                Label = procedureModel.Label.ToString(),
                 CreatedOn = procedureModel.CreatedOn,
                 UpdatedOn = procedureModel.UpdatedOn,
                 FileId = procedureModel.FileId,

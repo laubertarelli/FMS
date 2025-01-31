@@ -9,8 +9,9 @@ namespace Backend.Mappers
         {
             return new FileDto
             {
+                Id = fileModel.Id,
                 Cover = fileModel.Cover,
-                State = fileModel.State,
+                State = fileModel.State.ToString(),
                 CreatedOn = fileModel.CreatedOn,
                 UpdatedOn = fileModel.UpdatedOn,
                 Procedures = fileModel.Procedures.Select(p => p.ToProcedureDto()).ToList(),

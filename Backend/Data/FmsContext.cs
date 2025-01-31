@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using File = Backend.Models.File;
 
 namespace Backend.Data
@@ -16,11 +15,11 @@ namespace Backend.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.ConfigureWarnings(w =>
-            {
-                w.Ignore(RelationalEventId.PendingModelChangesWarning);
-                w.Ignore(RelationalEventId.NonTransactionalMigrationOperationWarning);
-            });
+            //optionsBuilder.ConfigureWarnings(w =>
+            //{
+            //    w.Ignore(RelationalEventId.PendingModelChangesWarning);
+            //    w.Ignore(RelationalEventId.NonTransactionalMigrationOperationWarning);
+            //});
             optionsBuilder.UseNpgsql(configuration["POSTGRES_CONNECTION"]);
         }
 

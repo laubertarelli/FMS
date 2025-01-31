@@ -7,13 +7,13 @@
         <nav class="div-nav">
             <ul class="nav-links">
                 <li>
-                    <RouterLink :to="{ name: 'Files' }">Files</RouterLink>
+                    <RouterLink to="/files/1">Files</RouterLink>
                 </li>
                 <li>
-                    <RouterLink :to="{ name: 'Procedures' }">Procedures</RouterLink>
+                    <RouterLink to="/procedures/1">Procedures</RouterLink>
                 </li>
                 <li>
-                    <RouterLink :to="{ name: 'Users' }">Users</RouterLink>
+                    <RouterLink to="/users/1">Users</RouterLink>
                 </li>
             </ul>
             <RouterLink :to="{ name: 'Account' }"><button class="btn-header">Account</button></RouterLink>

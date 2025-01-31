@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace Backend.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("files")]
     public class FileController(IFileService service) : ControllerBase
@@ -30,9 +30,9 @@ namespace Backend.Controllers
             return (file is null) ? NotFound() : Ok(file);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         [Authorize(Policy = "DeletePolicy")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var result = await service.DeleteAsync(id);
             return result ? NoContent() : NotFound();

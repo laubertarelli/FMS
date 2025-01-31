@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import state from "@/state";
-import http from "@/http";
+import http from "@/shared/http";
 
 const email = ref(null); // SHOULD BE ""
 const password = ref(null);

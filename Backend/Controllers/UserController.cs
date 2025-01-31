@@ -15,6 +15,7 @@ namespace Backend.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> Signup([FromBody] SignupUserDto signupDto)
         {
+            Console.WriteLine(signupDto.LastName);
             var user = await service.Signup(signupDto);
             return (user is null) ? BadRequest() : Ok(user);
         }

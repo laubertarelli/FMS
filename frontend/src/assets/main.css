@@ -15,6 +15,91 @@ body {
   font-style: normal;
 }
 
+.table-container {
+    background-color: #1f2937;
+    width: 65%;
+    padding: 1.3rem 2rem;
+    border-radius: 10px;
+}
+
+.btn {
+    padding: .275rem .65rem;
+    margin: 0.1rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.btn-pencil {
+    background-color: #ff7e22;
+}
+
+.btn-pencil:hover {
+    background-color: #c55d12;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px auto;
+    padding: 0.5rem;
+}
+
+.nav ul {
+    display: inline-flex;
+    align-items: stretch;
+    margin-left: 1rem;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.element {
+    display: flex;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0.50rem 0.75rem;
+    margin-left: 0;
+    color: rgb(156, 163, 175);
+    background-color: #1f2937;
+    border: 1px solid rgb(55, 65, 81);
+}
+
+.element:hover {
+    color: white;
+    background-color: rgb(55, 65, 81);
+}
+
+.prev {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.num-selected {
+    color: white;
+    background-color: rgb(55, 65, 81);
+}
+
+.next {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
 /* @import './base.css';
 
 #app {

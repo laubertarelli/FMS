@@ -90,7 +90,7 @@ footer {
   flex-direction: column;
   flex-grow: 0.001;
   gap: 2rem;
-  padding: 2rem 1rem;
+  padding: 1rem;
   width: 100%;
   margin-left: auto;
   margin-right: auto;

@@ -10,6 +10,7 @@ namespace Backend.Interfaces
         Task<File?> UpdateAsync(int id, RequestFileDto fileDto, string userId);
         Task<File?> GetByIdAsync(int id);
         Task<List<File>> GetAllAsync(int page);
+        Task<List<int>> GetIdsAsync();
         Task<int> CountAllAsync();
     }
 }

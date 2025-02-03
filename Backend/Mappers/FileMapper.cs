@@ -14,7 +14,7 @@ namespace Backend.Mappers
                 State = fileModel.State.ToString(),
                 CreatedOn = fileModel.CreatedOn,
                 UpdatedOn = fileModel.UpdatedOn,
-                Procedures = fileModel.Procedures.Select(p => p.ToProcedureDto()).ToList(),
+                Procedures = fileModel.Procedures.Count,
                 UserFullName = fileModel.User?.FullName ?? "Not Found"
             };
         }

@@ -52,10 +52,24 @@ namespace Backend.Controllers
             return (file is null) ? NotFound() : Ok(file);
         }
 
+        [HttpGet("states")]
+        public IActionResult GetFileStates()
+        {
+            var states = service.GetFileStates();
+            return Ok(states);
+        }
+
+        [HttpGet("ids")]
+        public async Task<IActionResult> GetIds()
+        {
+            var ids = await service.GetIdsAsync();
+            return Ok(ids);
+        }
+
         [HttpGet("count")]
         public async Task<IActionResult> CountAll()
         {
-            int count = await service.CountAllAsync();
+            var count = await service.CountAllAsync();
             return Ok(count);
         }
     }

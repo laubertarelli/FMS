@@ -39,7 +39,7 @@ namespace Backend.Data
             existingFile.UserId = userId;
 
             await context.SaveChangesAsync();
-            return existingFile;
+            return existingFile!;
         }
 
         public async Task<File?> GetByIdAsync(int id)
@@ -59,6 +59,14 @@ namespace Backend.Data
                 .Take(5)
                 .ToListAsync();
         }
+
+        public async Task<List<int>> GetIdsAsync()
+        {
+            return await context.Files
+                .Select(f => f.Id)
+                .ToListAsync();
+        }
+
         public async Task<int> CountAllAsync()
         {
             return await context.Files.CountAsync();

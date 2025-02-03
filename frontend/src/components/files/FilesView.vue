@@ -60,7 +60,7 @@ async function deleteFile(id) {
             <tbody>
                 <tr v-for="f in files" :key="f.id">
                     <td class="text-start">#{{ f.id }} - {{ f.cover }}<br>({{ f.state }})</td>
-                    <td>{{ f.procedures.length }}</td>
+                    <td>{{ f.procedures }}</td>
                     <td>{{ f.userFullName }}<br>{{ formatDate(f.updatedOn) }}</td>
                     <td>{{ formatDate(f.createdOn) }}</td>
                     <td>

@@ -13,6 +13,7 @@ namespace Backend.Interfaces.Services
         Task<List<ProcedureDto>> GetByFileIdAsync(int fileId, int page);
         Task<List<ProcedureDto>> GetByLabelAsync(ProcedureLabel label, int page);
         Task<List<ProcedureDto>> GetAllAsync(int page);
+        List<ProcedureLabelDto> GetProcedureLabels();
         Task<int> CountAllAsync();
         Task<int> CountByFileIdAsync(int fileId);
         Task<int> CountByLabelAsync(ProcedureLabel label);

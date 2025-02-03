@@ -9,6 +9,7 @@ namespace Backend.Mappers
         {
             return new ProcedureDto
             {
+                Id = procedureModel.Id,
                 Content = procedureModel.Content,
                 Label = procedureModel.Label.ToString(),
                 CreatedOn = procedureModel.CreatedOn,

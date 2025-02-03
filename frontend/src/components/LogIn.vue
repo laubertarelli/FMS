@@ -44,23 +44,14 @@ async function login() {
             <input placeholder="Password" class="input-field" type="password" id="password" v-model="password">
         </div>
         <div class="btn">
-            <button type="submit" class="button1">Login</button>
-            <button type="button" class="button2" @onclick="Signup">Sign Up</button>
+            <button type="submit" class="primary-btn">Login</button>
+            <button type="button" class="secondary-btn" @onclick="Signup">Sign Up</button>
         </div>
     </form>
 </template>
 
 <style>
 .form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 420px;
-    padding-left: 2em;
-    padding-right: 2em;
-    padding-bottom: 0.4em;
-    background-color: #1f2937;
-    border-radius: 10px;
     transition: .4s ease-in-out;
 }
 
@@ -69,61 +60,17 @@ async function login() {
     border: 1px solid black;
 }
 
-#heading {
-    text-align: center;
-    margin: 2em;
-    color: rgb(255, 255, 255);
-    font-size: 1.1em;
-}
-
-.field {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-    border-radius: 10px;
-    padding: 0.6em;
-    border: none;
-    outline: none;
-    color: white;
-    background-color: #374151;
-}
-
 .input-icon {
     height: 1.3em;
     width: 1.3em;
     fill: white;
 }
 
-.input-field {
-    background: none;
-    border: none;
-    outline: none;
-    width: 100%;
-    color: #d3d3d3;
-}
-
-.form .btn {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    margin-top: 2.5em;
-}
-
-.button1 {
-    padding: 0.5em;
-    padding-left: 1.1em;
-    padding-right: 1.1em;
-    border-radius: 5px;
-    margin-right: 0.5em;
-    border: none;
-    outline: none;
+.primary-btn {
     transition: .4s ease-in-out;
-    background-color: #2563EB;
-    color: white;
 }
 
-.button2 {
+.secondary-btn {
     padding: 0.5em;
     padding-left: 2.3em;
     padding-right: 2.3em;

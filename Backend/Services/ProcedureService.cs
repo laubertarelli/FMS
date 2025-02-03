@@ -67,6 +67,13 @@ namespace Backend.Services
             return procedures.Select(p => p.ToProcedureDto()).ToList();
         }
 
+        public List<ProcedureLabelDto> GetProcedureLabels()
+        {
+            return ((ProcedureLabel[])Enum.GetValues(typeof(ProcedureLabel)))
+                .Select(e => new ProcedureLabelDto() { Value = (int)e, Name = e.ToString() })
+                .ToList();
+        }
+
         public async Task<ProcedureDto?> UpdateAsync(int id, RequestProcedureDto procedureDto, string userId)
         {
             var procedureModel = await repo.UpdateAsync(id, procedureDto, userId);

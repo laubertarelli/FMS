@@ -15,6 +15,7 @@ body {
   font-style: normal;
 }
 
+/* TABLES-VIEWS */
 .table-container {
     background-color: #1f2937;
     width: 65%;
@@ -98,6 +99,71 @@ body {
 .next {
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
+}
+
+/* FORMS */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #1f2937;
+  width: 420px;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-bottom: 0.4em;
+  border-radius: 10px;
+}
+
+#heading {
+  text-align: center;
+  margin: 2em;
+  color: rgb(255, 255, 255);
+  font-size: 1.2em;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border-radius: 10px;
+  padding: 0.6em;
+  border: none;
+  outline: none;
+  color: white;
+  background-color: #374151;
+}
+
+.input-field {
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  color: #d3d3d3;
+}
+
+option {
+  background-color: #374151;
+  color: #d3d3d3;
+  padding: 1rem;
+}
+
+.div-btn {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  margin-top: 2.5em;
+}
+
+.primary-btn {
+  padding: 0.5em;
+  padding-left: 1.1em;
+  padding-right: 1.1em;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background-color: #2563EB;
+  color: white;
 }
 
 /* @import './base.css';

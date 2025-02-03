@@ -46,6 +46,13 @@ namespace Backend.Controllers
             return Ok(procedures);
         }
 
+        [HttpGet("labels")]
+        public IActionResult GetProcedureLabels()
+        {
+            var labels = service.GetProcedureLabels();
+            return Ok(labels);
+        }
+
         [HttpGet("view/{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {

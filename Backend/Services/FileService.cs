@@ -1,4 +1,5 @@
 ﻿using Backend.Dtos.File;
+using Backend.Enums;
 using Backend.Interfaces;
 using Backend.Interfaces.Services;
 using Backend.Mappers;
@@ -34,6 +35,18 @@ namespace Backend.Services
         {
             var file = await repo.GetByIdAsync(id);
             return file?.ToFileDto();
+        }
+
+        public List<FileStateDto> GetFileStates()
+        {
+            return ((FileState[])Enum.GetValues(typeof(FileState)))
+                .Select(e => new FileStateDto() { Value = (int)e, Name = e.ToString() })
+                .ToList();
+        }
+
+        public async Task<List<int>> GetIdsAsync()
+        {
+            return await repo.GetIdsAsync();
         }
 
         public async Task<FileDto?> UpdateAsync(int id, RequestFileDto fileDto, string userId)

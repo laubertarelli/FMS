@@ -24,7 +24,7 @@ async function add() {
 </script>
 
 <template>
-    <form class="form" @submit.prevent="add">
+    <form class="form form-details" @submit.prevent="add">
         <p id="heading">Add File</p>
         <div class="field">
             <input required class="input-field" placeholder="Cover" id="cover" v-model="file.cover">
@@ -36,7 +36,7 @@ async function add() {
             </select>
         </div>
         <div class="div-btn">
-            <button type="submit" class="primary-btn">Accept</button>
+            <button type="submit" class="form-btn">Accept</button>
         </div>
     </form>
 </template>

@@ -53,7 +53,7 @@ namespace Backend.Controllers
             return Ok(labels);
         }
 
-        [HttpGet("view/{id:int}")]
+        [HttpGet("details/{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var procedure = await service.GetByIdAsync(id);

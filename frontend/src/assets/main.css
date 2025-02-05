@@ -108,6 +108,9 @@ body {
   gap: 10px;
   background-color: #1f2937;
   width: 420px;
+}
+
+.form-details {
   padding-left: 2em;
   padding-right: 2em;
   padding-bottom: 0.4em;
@@ -155,17 +158,29 @@ option {
   margin-top: 2.5em;
 }
 
-.primary-btn {
+.form-btn {
   padding: 0.5em;
   padding-left: 1.1em;
   padding-right: 1.1em;
   border-radius: 5px;
   border: none;
   outline: none;
-  background-color: #2563EB;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+  color: white;
+}
+.form-btn:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
   color: white;
 }
 
+.grey {
+  background-color: #6c757d;
+}
+.grey:hover {
+  background-color: #484f58;
+}
 /* @import './base.css';
 
 #app {

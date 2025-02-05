@@ -13,6 +13,7 @@ import AddFile from "@/components/files/AddFile.vue";
 import UpdateFile from "@/components/files/UpdateFile.vue";
 import UpdateProcedure from "@/components/procedures/UpdateProcedure.vue";
 import AddProcedure from "@/components/procedures/AddProcedure.vue";
+import ProcedureByFileId from "@/components/procedures/ProcedureByFileId.vue";
 
 
 const routes = [
@@ -53,7 +54,13 @@ const routes = [
         path: "/procedures/:page",
         name: "Procedures",
         props: true,
-        component: ProceduresView
+        component: ProceduresView,
+        children: [
+            {
+                path: "file/:id",
+                component: ProcedureByFileId
+            },
+        ]
     },
     {
         path: "/procedures/details/:id",

@@ -45,7 +45,7 @@ namespace Backend.Controllers
             return Ok(files);
         }
 
-        [HttpGet("view/{id:int}")]
+        [HttpGet("details/{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var file = await service.GetByIdAsync(id);

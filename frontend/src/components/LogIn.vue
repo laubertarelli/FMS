@@ -17,13 +17,13 @@ async function login() {
         state.token = result.data.token;
         router.push("/home");
     } catch {
-       console.log("Wrong");
+        console.log("Wrong");
     }
 }
 </script>
 
 <template>
-    <form class="form" @submit.prevent="login">
+    <form class="form form-details" @submit.prevent="login">
         <p id="heading">Welcome</p>
         <div class="field">
             <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -43,14 +43,14 @@ async function login() {
             </svg>
             <input placeholder="Password" class="input-field" type="password" id="password" v-model="password">
         </div>
-        <div class="btn">
-            <button type="submit" class="primary-btn">Login</button>
-            <button type="button" class="secondary-btn" @onclick="Signup">Sign Up</button>
+        <div class="div-btn">
+            <button type="submit" class="form-btn">Login</button>
+            <button type="button" class="grey secondary-btn" @onclick="Signup">Sign Up</button>
         </div>
     </form>
 </template>
 
-<style>
+<style scoped>
 .form {
     transition: .4s ease-in-out;
 }
@@ -66,7 +66,7 @@ async function login() {
     fill: white;
 }
 
-.primary-btn {
+.form-btn {
     transition: .4s ease-in-out;
 }
 

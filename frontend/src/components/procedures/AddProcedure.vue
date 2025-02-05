@@ -28,7 +28,7 @@ async function add() {
 </script>
 
 <template>
-    <form class="form" @submit.prevent="add">
+    <form class="form form-details" @submit.prevent="add">
         <p id="heading">Add Procedure</p>
         <div class="field">
             <input required class="input-field" placeholder="Content" id="content" v-model="procedure.content">

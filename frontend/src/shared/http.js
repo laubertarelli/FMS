@@ -18,8 +18,8 @@ export default {
             }
         });
     },
-    async put(url){
-        return await axios.put(`${API_URL}${url}`, {
+    async put(url, data){
+        return await axios.put(`${API_URL}${url}`, data, {
             headers: {
                 Authorization: `Bearer ${state.token}`
             }

@@ -168,6 +168,7 @@ option {
   background-color: #1b6ec2;
   border-color: #1861ac;
   color: white;
+  text-decoration: none;
 }
 .form-btn:hover {
   background-color: #0b5ed7;

@@ -1,7 +1,9 @@
 <script setup>
 import http from '@/shared/http';
 import { onMounted, reactive } from 'vue';
+//import { useRouter } from 'vue-router';
 
+//const router = useRouter();
 const file = reactive({
     cover: "",
     state: ""
@@ -11,15 +13,15 @@ const states = reactive([]);
 onMounted(async () => {
     try {
         const result = await http.get("files/states");
-        states.splice(0, states.length, ...result.data); 
-    } catch(e) {
+        states.splice(0, states.length, ...result.data);
+    } catch (e) {
         console.log(e);
     }
 });
 
 async function add() {
     await http.post("files", file);
-    //router.push(`files/${Math.ceil(file.id / 5.0)}`);
+    //router.replace(`files/${Math.ceil(file.id / 5.0)}`);
 }
 </script>
 
@@ -42,7 +44,7 @@ async function add() {
 </template>
 
 <style>
-    .div-btn {
-        padding: .375rem .75rem;
-    }
+.div-btn {
+    padding: .375rem .75rem;
+}
 </style>

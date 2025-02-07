@@ -10,10 +10,8 @@ import FileDetails from "@/components/files/FileDetails.vue";
 import ProcedureDetails from "@/components/procedures/ProcedureDetails.vue";
 import UserDetails from "@/components/users/UserDetails.vue";
 import AddFile from "@/components/files/AddFile.vue";
-import UpdateFile from "@/components/files/UpdateFile.vue";
-import UpdateProcedure from "@/components/procedures/UpdateProcedure.vue";
 import AddProcedure from "@/components/procedures/AddProcedure.vue";
-import ProcedureByFileId from "@/components/procedures/ProcedureByFileId.vue";
+import ProceduresByFileId from "@/components/procedures/ProceduresByFileId.vue";
 
 
 const routes = [
@@ -45,12 +43,6 @@ const routes = [
         component: AddFile
     },
     {
-        path: "/files/update/:id",
-        name: "Update File",
-        props: true,
-        component: UpdateFile
-    },
-    {
         path: "/procedures/:page",
         name: "Procedures",
         props: true,
@@ -58,7 +50,7 @@ const routes = [
         children: [
             {
                 path: "file/:id",
-                component: ProcedureByFileId
+                component: ProceduresByFileId
             },
         ]
     },
@@ -67,11 +59,6 @@ const routes = [
         name: "Procedure Details",
         props: true,
         component: ProcedureDetails
-    },
-    {
-        path: "/procedures/update/:id",
-        name: "Update Procedure",
-        component: UpdateProcedure
     },
     {
         path: "/procedures/add",

@@ -46,7 +46,7 @@ async function deleteFile(id) {
 
 <template>
     <div class="table-container">
-        <RouterLink class="btn btn-primary p-2 mb-3" :to="`/procedures/add`">+ Add File</RouterLink>
+        <RouterLink class="btn btn-primary p-2 mb-3" :to="`/procedures/add`">+ Add Procedure</RouterLink>
         <table class="table text-white p-2 text-center">
             <thead>
                 <tr>
@@ -60,7 +60,9 @@ async function deleteFile(id) {
             <tbody>
                 <tr v-for="p in procedures" :key="p.id">
                     <td class="text-start">#{{ p.id }} - {{ p.content }}<br>({{ p.label }})</td>
-                    <td>{{ p.fileId }}</td>
+                    <td>
+                        <RouterLink class="text-decoration-none text-white" :to="`/files/details/${p.fileId}`">#{{ p.fileId }}</RouterLink>
+                    </td>
                     <td>{{ p.userFullName }}<br>{{ formatDate(p.updatedOn) }}</td>
                     <td>{{ formatDate(p.createdOn) }}</td>
                     <td>

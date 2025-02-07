@@ -73,6 +73,7 @@ namespace Backend.Data
         {
             return await context.Procedures
                 .Include(p => p.File).Include(p => p.User)
+                .OrderBy(p => p.Id)
                 .Skip((page - 1) * 5)
                 .Take(5)
                 .ToListAsync();

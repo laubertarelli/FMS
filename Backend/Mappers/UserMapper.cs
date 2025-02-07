@@ -9,11 +9,13 @@ namespace Backend.Mappers
         {
             return new UserDto
             {
+                Id = userModel.Id,
                 Username = userModel.UserName!,
                 Email = userModel.Email!,
-                FullName = userModel.FullName,
-                Files = userModel.Files.Select(f => f.ToFileDto()).ToList(),
-                Procedures = userModel.Procedures.Select(p => p.ToProcedureDto()).ToList()
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,
+                Files = userModel.Files.Count,
+                Procedures = userModel.Procedures.Count
             };
         }
 

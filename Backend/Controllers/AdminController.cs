@@ -31,8 +31,8 @@ namespace Backend.Controllers
             return Ok(users);
         }
 
-        [HttpGet("view")]
-        public async Task<IActionResult> GetById([FromBody] string id)
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetById([FromRoute] string id)
         {
             var user = await service.GetById(id);
             return (user is null) ? NotFound() : Ok(user);

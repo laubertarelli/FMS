@@ -55,6 +55,7 @@ namespace Backend.Data
             return await context.Files
                 .Include(f => f.Procedures)
                 .Include(f => f.User)
+                .OrderBy(f => f.Id)
                 .Skip((page - 1) * 5)
                 .Take(5)
                 .ToListAsync();
@@ -63,6 +64,7 @@ namespace Backend.Data
         public async Task<List<int>> GetIdsAsync()
         {
             return await context.Files
+                .OrderBy(f => f.Id)
                 .Select(f => f.Id)
                 .ToListAsync();
         }

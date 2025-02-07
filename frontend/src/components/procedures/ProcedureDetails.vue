@@ -1,21 +1,39 @@
 <script setup>
 import http from "@/shared/http";
 import { formatDate } from "@/shared/formatters";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
 const procedure = ref({});
+const labels = reactive([]);
+const newLabel = ref("");
+const isUpdating = ref(false);
 
 onMounted(async () => {
     try {
         const id = parseInt(route.params.id);
         procedure.value = (await http.get(`procedures/details/${id}`)).data;
+
+        const result = await http.get("procedures/labels");
+        labels.splice(0, labels.length, ...result.data);
     } catch {
         router.replace("/procedures/1");
     }
 });
+
+async function update() {
+    try {
+        procedure.value.label = newLabel.value;
+        await http.put(`procedures/${procedure.value.id}`, procedure.value);
+        window.location.reload();
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+const isCurrentLabel = (label) => label === procedure.value.label;
 </script>
 
 <template>
@@ -24,28 +42,35 @@ onMounted(async () => {
         <div class="data-container">
             <div class="content-container">
                 <label for="content">Content</label>
-                <input readonly class="input" type="text" id="content" :value="procedure.content" />
+                <input :disabled="!isUpdating" class="input" type="text" id="content" v-model="procedure.content" />
             </div>
             <div>
                 <label for="label">Label</label>
-                <input readonly class="input" type="text" id="label" :value="procedure.label" />
+                <input v-if="!isUpdating" disabled class="input" type="text" id="label" :value="procedure.label" />
+                <select v-else class="input" id="label" v-model="newLabel">
+                    <option value="" disabled selected>Select a label</option>
+                    <option v-for="label in labels" :key="label.value" :value="label.value">{{ label.name }} {{ isCurrentLabel(label.name) ? "(current)" : "" }}</option>
+                </select>
             </div>
             <div>
                 <label for="user">Last Update User</label>
-                <input readonly class="input" type="text" id="user" :value="procedure.userFullName" />
+                <input disabled class="input" type="text" id="user" :value="procedure.userFullName" />
             </div>
             <div>
                 <label for="edition">Last Update Date</label>
-                <input readonly class="input" type="text" id="edition" :value="formatDate(procedure.updatedOn)" />
+                <input disabled class="input" type="text" id="edition" :value="formatDate(procedure.updatedOn)" />
             </div>
             <div>
                 <label for="creation">Creation Date</label>
-                <input readonly class="input" type="text" id="creation" :value="formatDate(procedure.createdOn)" />
+                <input disabled class="input" type="text" id="creation" :value="formatDate(procedure.createdOn)" />
             </div>
-            <div class="div-btn">
-                <RouterLink :to="`/procedures/update/${procedure.id}`" class="form-btn text-decoration-none">Update</RouterLink>
-                <RouterLink :to="`/files/details/${procedure.fileId}`" class="form-btn grey text-decoration-none">File container
-                </RouterLink>
+            <div v-if="!isUpdating" class="div-btn">
+                <RouterLink :to="`/files/details/${procedure.fileId}`" class="form-btn grey">File container</RouterLink>
+                <button @click="() => isUpdating = !isUpdating" class="form-btn">Update</button>
+            </div>
+            <div v-else class="div-btn">
+                <button @click="() => isUpdating = !isUpdating" class="form-btn grey">Cancel</button>
+                <button @click="update" class="form-btn">Save changes</button>
             </div>
         </div>
     </div>

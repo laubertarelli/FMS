@@ -1,21 +1,39 @@
 <script setup>
 import http from "@/shared/http";
 import { formatDate } from "@/shared/formatters";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
 const file = ref({});
+const states = reactive([]);
+const newState = ref("");
+const isUpdating = ref(false);
 
 onMounted(async () => {
     try {
         const id = parseInt(route.params.id);
         file.value = (await http.get(`files/details/${id}`)).data;
+
+        const result = await http.get("files/states");
+        states.splice(0, states.length, ...result.data);
     } catch {
         router.replace("/files/1");
     }
 });
+
+async function update() {
+    try {
+        file.value.state = newState.value;
+        await http.put(`files/${file.value.id}`, file.value);
+        window.location.reload();
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+const isCurrentState = (state) => state === file.value.state;
 </script>
 
 <template>
@@ -24,28 +42,35 @@ onMounted(async () => {
         <div class="data-container">
             <div class="cover-container">
                 <label for="cover">Cover</label>
-                <input readonly class="input" type="text" id="cover" :value="file.cover" />
+                <input :disabled="!isUpdating" class="input" type="text" id="cover" v-model="file.cover" />
             </div>
             <div>
                 <label for="state">State</label>
-                <input readonly class="input" type="text" id="state" :value="file.state" />
+                <input v-if="!isUpdating" disabled class="input" type="text" id="state" :value="file.state" />
+                <select v-else class="input" id="state" v-model="newState">
+                    <option value="" disabled selected>Select a state</option>
+                    <option v-for="state in states" :key="state.value" :value="state.value">{{ state.name }} {{ isCurrentState(state.name) ? "(current)" : "" }}</option>
+                </select>
             </div>
             <div>
                 <label for="user">Last Update User</label>
-                <input readonly class="input" type="text" id="user" :value="file.userFullName" />
+                <input disabled class="input" type="text" id="user" :value="file.userFullName" />
             </div>
             <div>
                 <label for="edition">Last Update Date</label>
-                <input readonly class="input" type="text" id="edition" :value="formatDate(file.updatedOn)" />
+                <input disabled class="input" type="text" id="edition" :value="formatDate(file.updatedOn)" />
             </div>
             <div>
                 <label for="creation">Creation Date</label>
-                <input readonly class="input" type="text" id="creation" :value="formatDate(file.createdOn)" />
+                <input disabled class="input" type="text" id="creation" :value="formatDate(file.createdOn)" />
             </div>
-            <div class="div-btn">
-                <RouterLink :to="`/files/update/${file.id}`" class="form-btn text-decoration-none">Update</RouterLink>
-                <RouterLink :to="`/procedures/1/file/${file.id}`" class="form-btn grey text-decoration-none">Procedures
-                </RouterLink>
+            <div v-if="!isUpdating" class="div-btn">
+                <RouterLink :to="`/procedures/1/file/${file.id}`" class="form-btn grey">Procedures</RouterLink>
+                <button @click="() => isUpdating = !isUpdating" class="form-btn">Update</button>
+            </div>
+            <div v-else class="div-btn">
+                <button @click="() => isUpdating = !isUpdating" class="form-btn grey">Cancel</button>
+                <button @click="update" class="form-btn">Save changes</button>
             </div>
         </div>
     </div>

@@ -46,7 +46,7 @@ async function add() {
             </select>
         </div>
         <div class="div-btn">
-            <button type="submit" class="primary-btn">Accept</button>
+            <button type="submit" class="form-btn">Accept</button>
         </div>
     </form>
 </template>

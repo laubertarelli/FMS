@@ -52,11 +52,11 @@ namespace Backend.Services
             {
                 if (!existingClaims.Any(c => c.Value == newClaim.ClaimValue) && newClaim.IsSelected)
                 {
-                    await userManager.AddClaimAsync(user, new Claim("permission", newClaim.ClaimValue));
+                    await userManager.AddClaimAsync(user, new Claim("permissions", newClaim.ClaimValue));
                 }
                 else if (existingClaims.Any(c => c.Value == newClaim.ClaimValue) && !newClaim.IsSelected)
                 {
-                    await userManager.RemoveClaimAsync(user, new Claim("permission", newClaim.ClaimValue));
+                    await userManager.RemoveClaimAsync(user, new Claim("permissions", newClaim.ClaimValue));
                 }
             }
             return await userManager.GetClaimsAsync(user);

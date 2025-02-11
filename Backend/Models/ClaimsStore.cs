@@ -8,9 +8,9 @@ namespace Backend.Models
         {
             return
             [
-                new Claim("permission", "create"),
-                new Claim("permission", "update"),
-                new Claim("permission", "delete")
+                new Claim("permissions", "create"),
+                new Claim("permissions", "update"),
+                new Claim("permissions", "delete")
             ];
         }
     }

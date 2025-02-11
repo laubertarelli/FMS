@@ -41,9 +41,9 @@ namespace Backend.Services
               .AddDefaultTokenProviders();
 
             services.AddAuthorizationBuilder()
-                .AddPolicy("CreatePolicy", policy => policy.RequireClaim("permission", "create"))
-                .AddPolicy("UpdatePolicy", policy => policy.RequireClaim("permission", "update"))
-                .AddPolicy("DeletePolicy", policy => policy.RequireClaim("permission", "delete"));
+                .AddPolicy("CreatePolicy", policy => policy.RequireClaim("permissions", "create"))
+                .AddPolicy("UpdatePolicy", policy => policy.RequireClaim("permissions", "update"))
+                .AddPolicy("DeletePolicy", policy => policy.RequireClaim("permissions", "delete"));
 
             return services;
         }

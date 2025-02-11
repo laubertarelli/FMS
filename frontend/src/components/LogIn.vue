@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import state from "@/state";
 import http from "@/shared/http";
 
 const email = ref(null); // SHOULD BE ""
@@ -10,11 +9,11 @@ const router = useRouter();
 
 async function login() {
     try {
-        const result = await http.post("login", {
+        const response = await http.post("login", {
             email: email.value ?? "lautaber9@gmail.com",
             password: password.value ?? "Sanlorenzo1@"
         });
-        state.token = result.data.token;
+        localStorage.setItem("token", response.data.token);
         router.push("/home");
     } catch {
         console.log("Wrong");

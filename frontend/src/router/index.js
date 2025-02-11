@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-//import state from "@/state";
 import HomeView from "@/views/HomeView.vue";
 import FilesView from "@/components/files/FilesView.vue";
 import ProceduresView from "@/components/procedures/ProceduresView.vue";
@@ -12,7 +11,6 @@ import UserDetails from "@/components/users/UserDetails.vue";
 import AddFile from "@/components/files/AddFile.vue";
 import AddProcedure from "@/components/procedures/AddProcedure.vue";
 import ProceduresByFileId from "@/components/procedures/ProceduresByFileId.vue";
-
 
 const routes = [
     {
@@ -40,7 +38,14 @@ const routes = [
     {
         path: "/files/add",
         name: "Add File",
-        component: AddFile
+        component: AddFile,
+        beforeEnter: (to, from, next) => {
+            if (!canCreate()) {
+                next({ name: "Files" });
+            } else {
+                next();
+            }
+        }
     },
     {
         path: "/procedures/:page",
@@ -63,19 +68,40 @@ const routes = [
     {
         path: "/procedures/add",
         name: "Add Procedure",
-        component: AddProcedure
+        component: AddProcedure,
+        beforeEnter: (to, from, next) => {
+            if (!canCreate()) {
+                next({ name: "Procedures" });
+            } else {
+                next();
+            }
+        }
     },
     {
         path: "/users/:page",
         name: "Users",
         props: true,
-        component: UsersView
+        component: UsersView,
+        beforeEnter: (to, from, next) => {
+            if (!isAdmin()) {
+                next({ name: "Home" });
+            } else {
+                next();
+            }
+        }
     },
     {
         path: "/users/details/:id",
         name: "User Details",
         props: true,
-        component: UserDetails
+        component: UserDetails,
+        beforeEnter: (to, from, next) => { 
+            if (!isAdmin()) {
+                next({ name: "Home" });
+            } else {
+                next();
+            }
+        }
     },
     {
         path: "/account",
@@ -89,14 +115,33 @@ const router = createRouter({
     history: createWebHistory()
 });
 
-/*router.beforeEach((to) => {
-    if (to.name !== "Login" && !state.token) {
+const getToken = () => localStorage.getItem("token");
+function getTokenPayload() {
+    var base64Url = getToken().split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
+
+const isAdmin = () => getTokenPayload().role === "admin";
+const canCreate = () => {
+    const permissions = getTokenPayload().permission;
+    if (!permissions) return false;
+
+    return permissions.includes("create");
+};
+
+router.beforeEach((to) => {
+    if (to.name !== "Login" && !getToken()) {
         return { name: "Login" }
     }
-});*/
+});
 
 router.afterEach((to) => {
     document.title = "FMS | " + to.name;
-  })
+});
 
 export default router;

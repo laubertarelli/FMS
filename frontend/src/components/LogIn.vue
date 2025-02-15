@@ -10,11 +10,11 @@ const router = useRouter();
 async function login() {
     try {
         const response = await http.post("login", {
-            email: email.value ?? "lautaber9@gmail.com",
-            password: password.value ?? "Sanlorenzo1@"
+            email: email.value,
+            password: password.value
         });
         localStorage.setItem("token", response.data.token);
-        router.push("/home");
+        router.replace("/home");
     } catch {
         console.log("Wrong");
     }
@@ -43,8 +43,8 @@ async function login() {
             <input placeholder="Password" class="input-field" type="password" id="password" v-model="password">
         </div>
         <div class="div-btn">
+            <a :href="`/signup`" class="form-btn grey">Signup</a>
             <button type="submit" class="form-btn">Login</button>
-            <button type="button" class="grey secondary-btn" @onclick="Signup">Sign Up</button>
         </div>
     </form>
 </template>

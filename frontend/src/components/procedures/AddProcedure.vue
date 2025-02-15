@@ -1,7 +1,9 @@
 <script setup>
 import http from '@/shared/http';
 import { onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const procedure = reactive({
     content: "",
     label: "",
@@ -23,7 +25,7 @@ onMounted(async () => {
 
 async function add() {
     await http.post("procedures", procedure);
-    //router.push(`procedures/${Math.ceil(procedure.id / 5.0)}`);
+    router.replace("/procedures/1");
 }
 </script>
 

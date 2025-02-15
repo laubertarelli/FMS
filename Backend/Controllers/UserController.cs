@@ -15,7 +15,6 @@ namespace Backend.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> Signup([FromBody] SignupUserDto signupDto)
         {
-            Console.WriteLine(signupDto.LastName);
             var user = await service.Signup(signupDto);
             return (user is null) ? BadRequest() : Ok(user);
         }
@@ -25,6 +24,13 @@ namespace Backend.Controllers
         {
             var user = await service.Login(loginDto);
             return (user is null) ? NotFound() : Ok(user);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await service.Logout();
+            return result ? Ok() : NotFound();
         }
 
         [HttpPost("reset-password")]

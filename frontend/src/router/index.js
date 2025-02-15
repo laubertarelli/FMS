@@ -11,12 +11,18 @@ import UserDetails from "@/components/users/UserDetails.vue";
 import AddFile from "@/components/files/AddFile.vue";
 import AddProcedure from "@/components/procedures/AddProcedure.vue";
 import ProceduresByFileId from "@/components/procedures/ProceduresByFileId.vue";
+import SignUp from "@/components/SignUp.vue";
 
 const routes = [
     {
         path: "/",
         name: "Login",
         component: Login
+    },
+    {
+        path: "/signup",
+        name: "Signup",
+        component: SignUp
     },
     {
         path: "/home",
@@ -128,14 +134,14 @@ function getTokenPayload() {
 
 const isAdmin = () => getTokenPayload().role === "admin";
 const canCreate = () => {
-    const permissions = getTokenPayload().permission;
+    const permissions = getTokenPayload().permissions;
     if (!permissions) return false;
 
     return permissions.includes("create");
 };
 
 router.beforeEach((to) => {
-    if (to.name !== "Login" && !getToken()) {
+    if (to.name !== "Login" && to.name !== "Signup" && !getToken()) {
         return { name: "Login" }
     }
 });

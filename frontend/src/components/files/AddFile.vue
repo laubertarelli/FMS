@@ -1,9 +1,9 @@
 <script setup>
 import http from '@/shared/http';
 import { onMounted, reactive } from 'vue';
-//import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
-//const router = useRouter();
+const router = useRouter();
 const file = reactive({
     cover: "",
     state: ""
@@ -21,7 +21,7 @@ onMounted(async () => {
 
 async function add() {
     await http.post("files", file);
-    //router.replace(`files/${Math.ceil(file.id / 5.0)}`);
+    router.replace("/files/1");
 }
 </script>
 

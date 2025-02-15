@@ -1,5 +1,13 @@
 <script setup>
+import { onMounted, ref } from 'vue';
 import NavMenu from './components/NavMenu.vue';
+
+const hasToken = ref(false);
+const checkToken = () => {
+  hasToken.value = localStorage.getItem('token') !== null;
+};
+
+onMounted(() => checkToken());
 </script>
 
 <template>
@@ -9,7 +17,7 @@ import NavMenu from './components/NavMenu.vue';
         <img alt="logo" src="./assets/logo.png" />
         <span class="logo">FMS</span>
       </RouterLink>
-      <div>
+      <div v-if="hasToken">
         <NavMenu />
       </div>
     </header>

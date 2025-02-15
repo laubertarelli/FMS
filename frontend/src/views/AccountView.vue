@@ -19,7 +19,17 @@ async function update() {
     try {
         await http.put("account/update", user.value);
         isUpdating.value = !isUpdating.value;
-    } catch(e) {
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function logout() {
+    try {
+        await http.post("logout");
+        localStorage.removeItem("token");
+        router.replace("/");
+    } catch (e) {
         console.log(e);
     }
 }
@@ -27,8 +37,11 @@ async function update() {
 
 <template>
     <div class="div-container form-details">
-        <h2 id="heading">My Account</h2>
         <div class="data-container">
+            <div class="div-btn mt-3 align-items-center">
+                <h2 id="heading" class="m-0">My Account</h2>
+                <button @click="logout" class="btn btn-danger p-2 mb-3 logout">Log out</button>
+            </div>
             <div class="username-container">
                 <label for="username">Username</label>
                 <input :disabled="!isUpdating" class="input" type="text" id="username" v-model="user.username" />
@@ -79,6 +92,10 @@ async function update() {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.m-0 {
+    margin: 0 !important;
+  }
+
 label {
     font-weight: 500;
     font-size: 0.875rem;
@@ -103,9 +120,7 @@ label {
     color: #d3d3d3;
 }
 
-.div-btn {
-    display: flex;
-    justify-content: space-between;
-    grid-column: span 2 / span 2;
+.logout {
+    width: 94px;
 }
 </style>

@@ -28,6 +28,12 @@ namespace Backend.Services
             return userModel.ToNewUserDto(token);
         }
 
+        public async Task<bool> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return true;
+        }
+
         public async Task<UserDto?> MyAccount(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);

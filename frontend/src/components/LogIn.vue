@@ -21,7 +21,7 @@ async function login() {
 
 <template>
     <form class="form form-details" @submit.prevent="login">
-        <p id="heading">Welcome</p>
+        <p id="heading">Welcome!</p>
         <div class="field">
             <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 viewBox="0 0 16 16">

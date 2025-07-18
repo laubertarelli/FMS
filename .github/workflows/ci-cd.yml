@@ -77,7 +77,21 @@ jobs:
     environment: production
     
     steps:
-    - name: Deploy to production
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm ci
+        npm run build
+    
+    - name: Deploy backend
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
@@ -85,6 +99,17 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd ~/apps/fms
-          docker compose -f docker-compose.yml pull
-          docker compose -f docker-compose.yml up -d
+          docker compose -f docker-compose.deploy.yml pull
+          docker compose -f docker-compose.deploy.yml up -d
           docker system prune -f
+          
+    - name: Deploy frontend
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        source: "frontend/dist/*"
+        target: "~/static/fms/"
+        strip_components: 2
+        overwrite: true

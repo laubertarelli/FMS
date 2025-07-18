@@ -1,7 +1,6 @@
 bin
 obj
 ToDo.txt
-.github
 
 # dotenv files
 .env

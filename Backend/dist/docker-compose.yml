@@ -1,12 +1,7 @@
-﻿services:
-  app:
-    image: fms-api:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+services:
+  fms-api:
+    image: ghcr.io/laubertarelli/fms-api:latest
     container_name: fms-api
-    ports:
-      - 5000:8080
     depends_on:
       - db
     env_file:
@@ -14,8 +9,11 @@
     environment:
       - ASPNETCORE_URLS=http://+:8080/
       - ConnectionStrings__DefaultConnection=Host=fms-db;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    networks:
+      - fms_net
+      - caddy_net
 
-  db:
+  fms-db:
     image: postgres:16
     container_name: fms-db
     environment:
@@ -26,6 +24,13 @@
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - fms_net
 
 volumes:
   pgdata:
+
+networks:
+  fms_net:
+  caddy_net:
+    external: true

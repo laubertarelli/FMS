@@ -1,10 +1,12 @@
-﻿using Backend.Dtos.User;
+﻿using Backend.Dtos.Admin;
+using Backend.Dtos.User;
+using ClaimEnum = Backend.Enums.Claim;
 using Backend.Interfaces.Services;
 using Backend.Mappers;
 using Backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
+using Claim = System.Security.Claims.Claim;
 
 namespace Backend.Services
 {
@@ -29,19 +31,45 @@ namespace Backend.Services
 
         public async Task<List<UserDto>> GetAll(int page)
         {
-            var users = await userManager.Users.Skip((page - 1) * 5).Take(5).ToListAsync();
+            var users = await userManager.Users
+                .Include(u => u.Files)
+                .Include(u => u.Procedures)
+                .Skip((page - 1) * 5)
+                .Take(5)
+                .ToListAsync();
             return users.Select(u => u.ToUserDto()).ToList();
         }
 
         public async Task<UserDto?> GetById(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await userManager.Users
+                .Include(u => u.Files)
+                .Include(u => u.Procedures)
+                .FirstOrDefaultAsync(u => u.Id == id);
             return user?.ToUserDto();
+        }
+
+        public List<ClaimDto> GetAllClaims()
+        {
+            return ((ClaimEnum[])Enum.GetValues(typeof(ClaimEnum)))
+                .Select(c => new ClaimDto() { Value = (int)c, Name = c.ToString() })
+                .ToList();
+        }
+
+        public async Task<IList<Claim>?> GetUserClaims(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user is null)
+            {
+                return null;
+            }
+
+            return await userManager.GetClaimsAsync(user);
         }
 
         public async Task<IList<Claim>?> ManageUserClaims(AdminClaimsDto userDto)
         {
-            var user = await userManager.FindByEmailAsync(userDto.Email);
+            var user = await userManager.FindByIdAsync(userDto.UserId);
             if (user is null)
             {
                 return null;

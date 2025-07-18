@@ -20,7 +20,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Create([FromBody] RequestProcedureDto procedureDto)
         {
             var procedureModel = await service.CreateAsync(procedureDto, UserId);
-            return CreatedAtAction(nameof(GetById), new { id = procedureModel.Id }, procedureModel.ToProcedureDto());
+            return Ok("The procedure has been created successfully!");
         }
 
         [HttpPut("{id:int}")]
@@ -28,7 +28,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] RequestProcedureDto procedureDto)
         {
             var procedureModel = await service.UpdateAsync(id, procedureDto, UserId);
-            return (procedureModel is null) ? NotFound() : Ok(procedureModel);
+            return (procedureModel is null) ? NotFound() : Ok("The procedure has been updated successfully!");
         }
 
         [HttpDelete]

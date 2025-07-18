@@ -25,7 +25,6 @@ onMounted(async () => {
 
 async function add() {
     await http.post("procedures", procedure);
-    router.replace("/procedures/1");
 }
 </script>
 

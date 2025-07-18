@@ -4,6 +4,10 @@
   margin: 0;
 }
 
+main {
+  position: relative;
+}
+
 html,
 body {
   font-family: "Poppins", Helvetica, Arial, sans-serif;

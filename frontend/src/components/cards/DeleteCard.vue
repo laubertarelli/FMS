@@ -1,57 +1,85 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import http from '@/shared/http';
+import { onClickOutside } from '@vueuse/core';
 
-const emit = defineEmits(["onConfirmed"]);
-const visible = ref(false);
+const deleteModalRef = ref(null);
+const emits = defineEmits(["update:modelValue"]);
+const props = defineProps({
+    modelValue: {
+        type: Boolean,
+        required: true
+    },
+    id: {
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    }
+});
 
-function Confirm(event) {
-    emit("onConfirmed", console.log(event.target.value));
-    visible.value = true;
+onMounted(() => {
+    document.addEventListener('keyup', handleClose);
+});
+onUnmounted(() => {
+    document.removeEventListener('keyup', handleClose);
+});
+
+const closeModal = () => {
+    emits('update:modelValue', false);
+};
+onClickOutside(deleteModalRef, closeModal);
+
+const handleClose = (event) => {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+};
+
+async function deleteItem() {
+    try {
+        await http.delete(props.type, props.id);
+        closeModal();
+    } catch (e) {
+        console.error(e);
+    }
 }
 </script>
 
 <template>
-    <div v-if="visible" class="card">
-        <div class="card-content">
-            <p class="card-heading">Are you sure?</p>
-            <p class="card-description">This process cannot be undone!</p>
+    <div class="delete-card">
+        <div class="card-content" ref="deleteModalRef">
+            <p class="card-heading">Are you sure? {{ props.type === 'files' ? 'This process cannot be undone!' : '' }}</p>
+            <p v-if="props.type === 'files'" class="card-description">All procedures attached will be deleted.</p>
+            <p v-else class="card-description">This process cannot be undone!</p>
+            <footer class="card-button-wrapper">
+                <button class="card-button secondary" @click="closeModal">Cancel</button>
+                <button class="card-button primary" @click="deleteItem">Delete</button>
+            </footer>
         </div>
-        <div class="card-button-wrapper">
-            <button class="card-button secondary" @onclick="() => visible = false">Cancel</button>
-            <button class="card-button primary" @onclick="Confirm">Delete</button>
-        </div>
-        <button class="exit-button" @onclick="() => visible = false">
-            <svg height="20px" viewBox="0 0 384 512">
-                <path
-                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z">
-                </path>
-            </svg>
-        </button>
     </div>
 </template>
 
 <style>
-.card {
-    width: 300px;
-    height: fit-content;
-    background: #111827;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+.delete-card {
+    position: absolute;
+    /* Cambiado de fixed a absolute */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 400px;
     padding: 30px;
-    position: fixed;
+    padding-bottom: 15px;
+    border-radius: 20px;
+    background-color: #111827;
     box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.068);
 }
 
 .card-content {
-    width: 100%;
-    height: fit-content;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    height: fit-content;
 }
 
 .card-heading {
@@ -98,25 +126,5 @@ function Confirm(event) {
 
 .secondary:hover {
     background-color: rgb(197, 197, 197);
-}
-
-.exit-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    cursor: pointer;
-}
-
-.exit-button:hover svg {
-    fill: rgb(80, 80, 80);
-}
-
-.exit-button svg {
-    fill: rgb(175, 175, 175);
 }
 </style>

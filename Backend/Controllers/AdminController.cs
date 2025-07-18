@@ -1,4 +1,5 @@
 ﻿using Backend.Dtos.User;
+using Backend.Dtos.Admin;
 using Backend.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateAdminDto updateDto)
         {
             var user = await service.Update(updateDto);
-            return (user is null) ? NotFound() : Ok(user);
+            return (user is null) ? NotFound() : Ok("The user has been updated successfully!");
         }
 
         [HttpDelete]
@@ -45,7 +46,21 @@ namespace Backend.Controllers
             return Ok(count);
         }
 
-        [HttpPost("claims")]
+        [HttpGet("claims")]
+        public IActionResult GetAllClaims()
+        {
+            var claims = service.GetAllClaims();
+            return Ok(claims);
+        }
+
+        [HttpGet("claims/{id}")]
+        public async Task<IActionResult> GetUserClaims([FromRoute] string id)
+        {
+            var claims = await service.GetUserClaims(id);
+            return (claims is null) ? NotFound() : Ok(claims);
+        }
+
+        [HttpPut("claims")]
         public async Task<IActionResult> ManageUserClaims([FromBody] AdminClaimsDto userDto)
         {
             var claims = await service.ManageUserClaims(userDto);

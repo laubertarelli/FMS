@@ -16,14 +16,14 @@ namespace Backend.Controllers
         public async Task<IActionResult> Signup([FromBody] SignupUserDto signupDto)
         {
             var user = await service.Signup(signupDto);
-            return (user is null) ? BadRequest() : Ok(user);
+            return (user is null) ? BadRequest() : Ok("Your account has been created successfully!");
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDto loginDto)
         {
             var user = await service.Login(loginDto);
-            return (user is null) ? NotFound() : Ok(user);
+            return (user is null) ? NotFound("Email or password invalid.") : Ok(user);
         }
 
         [HttpPost("logout")]
@@ -33,11 +33,11 @@ namespace Backend.Controllers
             return result ? Ok() : NotFound();
         }
 
-        [HttpPost("reset-password")]
+        [HttpPut("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordUserDto userDto)
         {
             var result = await service.ResetPassword(userDto);
-            return result ? RedirectToAction(nameof(Login)) : NotFound();
+            return result ? Ok("Your password has been updated successfully!") : NotFound("Email not found.");
         }
 
         [HttpGet("account")]
@@ -53,7 +53,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateUserDto updateDto)
         {
             var user = await service.Update(updateDto, UserId);
-            return (user is null) ? NotFound() : Ok(user);
+            return (user is null) ? NotFound() : Ok("Your account has been updated successfully!");
         }
     }
 }

@@ -3,6 +3,7 @@ import { onMounted, reactive, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { formatDate } from "@/shared/formatters";
 import http from "@/shared/http";
+import DeleteCard from "../cards/DeleteCard.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -34,14 +35,15 @@ function redirect() { // VER SI SE PUEDE IMPLEMENTAR EN ROUTER/INDEX.JS
         router.push(`/files/${totalPages.value}`);
 };
 
-async function deleteFile(id) {
-    try {
-        await http.delete("files", id);
-        window.location.reload();
-    } catch(e) {
-        console.error(e);
-    }
-}
+const handleDeleteClick = (id) => {
+    modals.deleteModal = true;
+    modals.id = id
+};
+
+const modals = reactive({
+    deleteModal: false,
+    id: 0
+});
 </script>
 
 <template>
@@ -61,7 +63,8 @@ async function deleteFile(id) {
                 <tr v-for="f in files" :key="f.id">
                     <td class="text-start">#{{ f.id }} - {{ f.cover }}<br>({{ f.state }})</td>
                     <td>
-                        <RouterLink class="text-decoration-none text-white" :to="`/procedures/1/file/${f.id}`" >{{ f.procedures }}</RouterLink>
+                        <RouterLink class="text-decoration-none text-white" :to="`/procedures/1/file/${f.id}`">{{
+                            f.procedures }}</RouterLink>
                     </td>
                     <td>{{ f.userFullName }}<br>{{ formatDate(f.updatedOn) }}</td>
                     <td>{{ formatDate(f.createdOn) }}</td>
@@ -80,8 +83,8 @@ async function deleteFile(id) {
                                 <path
                                     d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
                             </svg>
-                        </RouterLink> -->
-                        <button class="btn btn-danger" @click="deleteFile(f.id)">
+                        </RouterLink>  -->
+                        <button class="btn btn-danger" @click.prevent="handleDeleteClick(f.id)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                 <path
@@ -93,31 +96,27 @@ async function deleteFile(id) {
             </tbody>
         </table>
         <nav class="nav">
-            <span>Mostrando {{ totalFiles > 0 ? ((page - 1) * 5) + 1 : "0" }} - {{ (page * 5) < totalFiles ? page * 5 :
-                totalFiles }} de {{ totalFiles }}</span>
-                    <ul v-if="totalPages > 1">
-                        <li>
-                            <a v-if="hasPrevious" class="element prev" :href="`/files/${page - 1}`">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-arrow-left-short" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd"
-                                        d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
-                                </svg>
-                            </a>
-                        </li>
-                        <li v-for="i in Math.min(totalPages, 5)" :key="i">
-                            <a class="element" :class="{ 'num-selected': i === page }" :href="`/files/${i}`">{{ i }}</a>
-                        </li>
-                        <li>
-                            <a v-if="hasNext" class="element next" :href="`/files/${page + 1}`">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-arrow-right-short" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd"
-                                        d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
+            <span>Mostrando {{ totalFiles > 0 ? ((page - 1) * 5) + 1 : "0" }} - {{ (page * 5) < totalFiles ? page * 5 : totalFiles }} de {{ totalFiles }}</span>
+            <ul v-if="totalPages > 1">
+                <li>
+                    <a v-if="hasPrevious" class="element prev" :href="`/files/${page - 1}`">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5" />
+                        </svg>
+                    </a>
+                </li>
+                <li v-for="i in Math.min(totalPages, 5)" :key="i">
+                   <a class="element" :class="{ 'num-selected': i === page }" :href="`/files/${i}`">{{ i }}</a>
+                </li>
+                <li>
+                    <a v-if="hasNext" class="element next" :href="`/files/${page + 1}`">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8" />
+                        </svg>
+                    </a>
+                </li>
+           </ul>
         </nav>
+        <DeleteCard v-if="modals.deleteModal" v-model="modals.deleteModal" :id="modals.id" :type="`files`" />
     </div>
 </template>

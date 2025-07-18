@@ -20,6 +20,8 @@ namespace Backend.Data
             //    w.Ignore(RelationalEventId.PendingModelChangesWarning);
             //    w.Ignore(RelationalEventId.NonTransactionalMigrationOperationWarning);
             //});
+            
+            //optionsBuilder.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
             optionsBuilder.UseNpgsql(configuration["POSTGRES_CONNECTION"]);
         }
 
@@ -65,6 +67,11 @@ namespace Backend.Data
                 }
             ];
             modelBuilder.Entity<IdentityRole>().HasData(roles);
+
+            if (Database.GetPendingMigrations().Any())
+            {
+                Database.Migrate();
+            }
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

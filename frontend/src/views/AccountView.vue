@@ -40,7 +40,7 @@ async function logout() {
         <div class="data-container">
             <div class="div-btn mt-3 align-items-center">
                 <h2 id="heading" class="m-0">My Account</h2>
-                <button @click="logout" class="btn btn-danger p-2 mb-3 logout">Log out</button>
+                <button @click="logout" class="btn btn-danger p-2 logout">Log out</button>
             </div>
             <div class="username-container">
                 <label for="username">Username</label>
@@ -67,7 +67,7 @@ async function logout() {
                 <input disabled class="input" type="text" id="procedures" :value="user.procedures" />
             </div>
             <div v-if="!isUpdating" class="div-btn">
-                <RouterLink :to="`/users/1`" class="form-btn grey">Change password</RouterLink>
+                <RouterLink :to="{ name: 'Forgot Password' }" class="form-btn grey">Change password</RouterLink>
                 <button @click="() => isUpdating = !isUpdating" class="form-btn">Update</button>
             </div>
             <div v-else class="div-btn">

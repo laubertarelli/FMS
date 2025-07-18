@@ -21,7 +21,6 @@ onMounted(async () => {
 
 async function add() {
     await http.post("files", file);
-    router.replace("/files/1");
 }
 </script>
 

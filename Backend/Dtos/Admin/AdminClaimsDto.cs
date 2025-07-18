@@ -2,7 +2,7 @@
 {
     public class AdminClaimsDto
     {
-        public string Email { get; set; } = "";
+        public string UserId { get; set; } = "";
         public List<ClaimSelectedDto> Claims { get; set; } = [];
     }
 }

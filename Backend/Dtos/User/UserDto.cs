@@ -1,4 +1,6 @@
-﻿namespace Backend.Dtos.User
+﻿using System.Security.Claims;
+
+namespace Backend.Dtos.User
 {
     public class UserDto
     {
@@ -9,6 +11,7 @@
         public string LastName { get; set; } = "";
         public int Files { get; set; }
         public int Procedures { get; set; }
+        public IList<Claim> Claims { get; set; } = [];
         public string FullName => $"{FirstName} {LastName}";
     }
 }

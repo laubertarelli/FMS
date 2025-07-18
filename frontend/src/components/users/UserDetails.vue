@@ -6,6 +6,8 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 const user = ref({});
+const fullName = ref("");
+fullName.value = user.value.firstName + " " + user.value.lastName;
 const isUpdating = ref(false);
 
 onMounted(async () => {

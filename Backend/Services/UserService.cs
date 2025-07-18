@@ -36,7 +36,10 @@ namespace Backend.Services
 
         public async Task<UserDto?> MyAccount(string userId)
         {
-            var user = await userManager.FindByIdAsync(userId);
+            var user = await userManager.Users
+                .Include(u => u.Files)
+                .Include(u => u.Procedures)
+                .FirstOrDefaultAsync(u => u.Id == userId);
             return user?.ToUserDto();
         }
 
@@ -50,6 +53,14 @@ namespace Backend.Services
 
             var code = await userManager.GeneratePasswordResetTokenAsync(userModel);
             var result = await userManager.ResetPasswordAsync(userModel, code, userDto.Password);
+            if (!result.Succeeded)
+            {
+                // Opcional: Loguea los errores para depuración
+                foreach (var error in result.Errors)
+                {
+                    Console.WriteLine($"Error: {error.Code} - {error.Description}");
+                }
+            }
             return result.Succeeded;
         }
 

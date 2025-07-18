@@ -27,7 +27,6 @@ async function update() {
     try {
         procedure.value.label = newLabel.value;
         await http.put(`procedures/${procedure.value.id}`, procedure.value);
-        window.location.reload();
     } catch(e) {
         console.log(e);
     }

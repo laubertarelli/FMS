@@ -1,6 +1,6 @@
 <script setup>
 import http from '@/shared/http';
-import { onMounted, reactive } from 'vue';
+import { h, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -15,7 +15,6 @@ const user = reactive({
 
 async function signup() {
     await http.post("signup", user);
-    router.replace("/");
 }
 </script>
 
@@ -35,10 +34,10 @@ async function signup() {
             <input required class="input-field" placeholder="Last name" id="last-name" v-model="user.lastName">
         </div>
         <div class="field">
-            <input required class="input-field" type="password" placeholder="password" id="" v-model="user.password">
+            <input required minlength="8" class="input-field" type="password" placeholder="Password" id="passwd" v-model="user.password">
         </div>
         <div class="field">
-            <input required class="input-field" type="password" placeholder="Confirm password" id="conf-passwd" v-model="user.confirmPassword">
+            <input required minlength="8" class="input-field" type="password" placeholder="Confirm password" id="conf-passwd" v-model="user.confirmPassword">
         </div>
         <div class="div-btn">
             <button type="submit" class="form-btn">Accept</button>

@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { modals } from './shared/http';
 import NavMenu from './components/NavMenu.vue';
+import ErrorCard from './components/cards/ErrorCard.vue';
+import SuccessCard from './components/cards/SuccessCard.vue';
 
 const hasToken = ref(false);
 const checkToken = () => {
@@ -8,6 +11,10 @@ const checkToken = () => {
 };
 
 onMounted(() => checkToken());
+
+const resetMessage = () => {
+    modals.message = "";
+};
 </script>
 
 <template>
@@ -24,7 +31,7 @@ onMounted(() => checkToken());
     <main>
       <RouterView />
     </main>
-    <footer>
+<!--<footer>
       <div class="footer-container">
         <div class="footer-info">
           <a class="footer-title">
@@ -32,7 +39,15 @@ onMounted(() => checkToken());
           </a>
         </div>
       </div>
-    </footer>
+    </footer> -->
+    <SuccessCard v-if="modals.successModal" 
+      v-model="modals.successModal" 
+      :message="modals.message"
+      @resetMessage="resetMessage" />
+    <ErrorCard v-if="modals.errorModal" 
+      v-model="modals.errorModal" 
+      :message="modals.message" 
+      @resetMessage="resetMessage" />
   </div>
 </template>
 

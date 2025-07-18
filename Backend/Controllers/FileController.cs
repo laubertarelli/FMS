@@ -19,7 +19,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Create([FromBody] RequestFileDto fileDto)
         {
             var fileModel = await service.CreateAsync(fileDto, UserId);
-            return CreatedAtAction(nameof(GetById), new { id = fileModel.Id }, fileModel.ToFileDto());
+            return Ok("The file has been created successfully!");
         }
 
         [HttpPut("{id:int}")]
@@ -27,7 +27,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] RequestFileDto fileDto)
         {
             var file = await service.UpdateAsync(id, fileDto, UserId);
-            return (file is null) ? NotFound() : Ok(file);
+            return (file is null) ? NotFound() : Ok("The file has been updated successfully!");
         }
 
         [HttpDelete("{id:int}")]
@@ -66,6 +66,7 @@ namespace Backend.Controllers
             return Ok(ids);
         }
 
+        [AllowAnonymous]
         [HttpGet("count")]
         public async Task<IActionResult> CountAll()
         {

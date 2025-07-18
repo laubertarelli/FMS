@@ -12,6 +12,9 @@ import AddFile from "@/components/files/AddFile.vue";
 import AddProcedure from "@/components/procedures/AddProcedure.vue";
 import ProceduresByFileId from "@/components/procedures/ProceduresByFileId.vue";
 import SignUp from "@/components/SignUp.vue";
+import ForgotPassword from "@/components/ForgotPassword.vue";
+import PageNotFound from "@/components/PageNotFound.vue";
+import ManageClaims from "@/components/users/ManageClaims.vue";
 
 const routes = [
     {
@@ -110,9 +113,32 @@ const routes = [
         }
     },
     {
+        path: "/users/claims/:id",
+        name: "Manage Claims",
+        props: true,
+        component: ManageClaims,
+        beforeEnter: (to, from, next) => { 
+            if (!isAdmin()) {
+                next({ name: "Home" });
+            } else {
+                next();
+            }
+        }
+    },
+    {
+        path: "/account/forgot-password",
+        name: "Forgot Password",
+        component: ForgotPassword
+    },
+    {
         path: "/account",
         name: "Account",
         component: AccountView
+    },
+    {
+        path: "/:pathMatch(.*)*",
+        name: "Not Found",
+        component: PageNotFound
     }
 ]
 
@@ -141,7 +167,7 @@ const canCreate = () => {
 };
 
 router.beforeEach((to) => {
-    if (to.name !== "Login" && to.name !== "Signup" && !getToken()) {
+    if (to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password" && !getToken()) {
         return { name: "Login" }
     }
 });

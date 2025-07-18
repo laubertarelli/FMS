@@ -27,7 +27,6 @@ async function update() {
     try {
         file.value.state = newState.value;
         await http.put(`files/${file.value.id}`, file.value);
-        window.location.reload();
     } catch(e) {
         console.log(e);
     }

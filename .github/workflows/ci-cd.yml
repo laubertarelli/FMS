@@ -85,6 +85,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd ~/apps/fms
-          docker compose -f docker-compose.deploy.yml pull
-          docker compose -f docker-compose.deploy.yml up -d
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
           docker system prune -f

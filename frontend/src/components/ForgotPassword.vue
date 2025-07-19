@@ -1,5 +1,4 @@
 <script setup>
-import router from "@/router";
 import http from "@/shared/http";
 import { reactive } from "vue";
 

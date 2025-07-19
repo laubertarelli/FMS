@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import { modals } from './shared/http';
 import NavMenu from './components/NavMenu.vue';
 import ErrorCard from './components/cards/ErrorCard.vue';

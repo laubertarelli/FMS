@@ -1,9 +1,7 @@
 <script setup>
 import http from '@/shared/http';
 import { onMounted, reactive } from 'vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
 const file = reactive({
     cover: "",
     state: ""

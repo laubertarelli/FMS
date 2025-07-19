@@ -1,9 +1,7 @@
 <script setup>
 import http from '@/shared/http';
-import { h, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive } from 'vue';
 
-const router = useRouter();
 const user = reactive({
     username: "",
     email: "",

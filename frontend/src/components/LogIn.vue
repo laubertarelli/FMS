@@ -14,6 +14,10 @@ async function login() {
     });
     if (response?.status === 200) {
         localStorage.setItem("token", response.data.token);
+        // Notificar al App.vue que el estado de autenticación cambió
+        if (window.updateAuthState) {
+            window.updateAuthState();
+        }
         router.replace("/home");
     }
 }

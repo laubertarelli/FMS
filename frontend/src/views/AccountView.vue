@@ -28,6 +28,10 @@ async function logout() {
     try {
         await http.post("logout");
         localStorage.removeItem("token");
+        // Notificar al App.vue que el estado de autenticación cambió
+        if (window.updateAuthState) {
+            window.updateAuthState();
+        }
         router.replace("/");
     } catch (e) {
         console.log(e);

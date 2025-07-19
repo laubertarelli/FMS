@@ -28,6 +28,10 @@ onMounted(async () => {
         // Si hay error de autenticación, redirigir al login
         if (e.response?.status === 401) {
             localStorage.removeItem('token');
+            // Notificar al App.vue que el estado de autenticación cambió
+            if (window.updateAuthState) {
+                window.updateAuthState();
+            }
             router.push('/');
         }
     }

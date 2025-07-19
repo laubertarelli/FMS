@@ -1,18 +1,31 @@
 <script setup>
-import { onMounted, onUpdated, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { modals } from './shared/http';
 import NavMenu from './components/NavMenu.vue';
 import ErrorCard from './components/cards/ErrorCard.vue';
 import SuccessCard from './components/cards/SuccessCard.vue';
 
-const hasToken = ref(false);
+const isAuthenticated = ref(false);
+
 const checkToken = () => {
-  hasToken.value = localStorage.getItem('token') !== null;
-  console.log('Token exists:', hasToken.value);
+    const hasToken = localStorage.getItem('token') !== null;
+    isAuthenticated.value = hasToken;
+    return hasToken;
 };
 
-onMounted(() => checkToken());
-onUpdated(() => checkToken());
+// Función para actualizar el estado de autenticación desde otros componentes
+window.updateAuthState = checkToken;
+
+onMounted(() => {
+    checkToken();
+    
+    // Escuchar cambios en localStorage
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'token') {
+            checkToken();
+        }
+    });
+});
 
 const resetMessage = () => {
     modals.message = "";
@@ -26,7 +39,7 @@ const resetMessage = () => {
         <img alt="logo" src="./assets/logo.png" />
         <span class="logo">FMS</span>
       </RouterLink>
-      <div v-if="hasToken">
+      <div v-if="isAuthenticated">
         <NavMenu />
       </div>
     </header>

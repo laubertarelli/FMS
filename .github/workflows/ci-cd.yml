@@ -70,11 +70,29 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
-  deploy:
-    needs: build-and-push
+  lint-frontend:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment: production
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Lint frontend
+      run: |
+        cd frontend
+        npm ci
+        npm run lint
+
+  build-frontend:
+    needs: lint-frontend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
     - name: Checkout repository
@@ -89,7 +107,23 @@ jobs:
       run: |
         cd frontend
         npm ci
-        npm run build
+        npm run build:prod
+        
+    - name: Upload frontend build
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-dist
+        path: frontend/dist/
+
+  deploy:
+    needs: [build-and-push, build-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
     
     - name: Deploy backend
       uses: appleboy/ssh-action@v1.0.3
@@ -102,6 +136,12 @@ jobs:
           docker compose -f docker-compose.deploy.yml pull
           docker compose -f docker-compose.deploy.yml up -d
           docker system prune -f
+          
+    - name: Download frontend build
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-dist
+        path: frontend/dist
           
     - name: Deploy frontend
       uses: appleboy/scp-action@v0.1.7

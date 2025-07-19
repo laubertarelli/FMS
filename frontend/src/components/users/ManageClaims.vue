@@ -1,12 +1,11 @@
 <script setup>
 import http from "@/shared/http";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 const claims = reactive([]);
 const userClaims = reactive([]);
-const isUpdating = ref(false);
 
 onMounted(async () => {
     try {
@@ -20,18 +19,6 @@ onMounted(async () => {
         console.error(e);
     }
 });
-
-async function update() {
-    try {
-        await http.put("claims", {
-            id: route.params.id,
-            claims: userClaims
-        });
-        isUpdating.value = !isUpdating.value;
-    } catch (e) {
-        console.error(e);
-    }
-}
 
 const grant = (name) => userClaims.push({ value: name.toLowerCase() });
 function remove(name) {

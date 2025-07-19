@@ -24,6 +24,7 @@ const handleError = (error) => {
     modals.message = data;
     if (data.errors !== undefined) {
         modals.message = Object.entries(data.errors)
+            // eslint-disable-next-line no-unused-vars
             .map(([key, value]) => `${Array.isArray(value) ? value.join(", ") : value}`)
             .join("\n");
     }

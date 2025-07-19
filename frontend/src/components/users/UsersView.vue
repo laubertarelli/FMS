@@ -24,6 +24,11 @@ onMounted(async () => {
         users.splice(0, users.length, ...result.data);
     } catch (e) {
         console.error(e);
+        // Si hay error de autenticación, redirigir al login
+        if (e.response?.status === 401) {
+            localStorage.removeItem('token');
+            router.push('/');
+        }
     }
 });
 

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUpdated, ref } from 'vue';
 import { modals } from './shared/http';
 import NavMenu from './components/NavMenu.vue';
 import ErrorCard from './components/cards/ErrorCard.vue';
@@ -8,9 +8,11 @@ import SuccessCard from './components/cards/SuccessCard.vue';
 const hasToken = ref(false);
 const checkToken = () => {
   hasToken.value = localStorage.getItem('token') !== null;
+  console.log('Token exists:', hasToken.value);
 };
 
 onMounted(() => checkToken());
+onUpdated(() => checkToken());
 
 const resetMessage = () => {
     modals.message = "";

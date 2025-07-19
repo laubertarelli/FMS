@@ -30,7 +30,8 @@ const routes = [
     {
         path: "/home",
         name: "Home",
-        component: HomeView
+        redirect: "/files/1", // Redirige a la primera página de archivos
+        //component: HomeView
     },
     {
         path: "/files/:page",

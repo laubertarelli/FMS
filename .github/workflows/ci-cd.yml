@@ -11,7 +11,7 @@ env:
   IMAGE_NAME: ${{ github.repository_owner }}/fms-api
 
 jobs:
-  test:
+  test-backend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -20,6 +20,14 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+        
+    - name: Cache .NET dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/Backend.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
         
     - name: Restore dependencies
       run: dotnet restore Backend/Backend.csproj
@@ -30,8 +38,8 @@ jobs:
     - name: Test
       run: dotnet test Backend/Backend.csproj --no-build --verbosity normal
 
-  build-and-push:
-    needs: test
+  build-backend:
+    needs: test-backend
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
@@ -70,7 +78,7 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
-  lint-frontend:
+  test-frontend:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
@@ -82,6 +90,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        
+    - name: Cache Node.js dependencies
+      uses: actions/cache@v3
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
     - name: Lint frontend
       run: |
@@ -90,7 +106,7 @@ jobs:
         npm run lint
 
   build-frontend:
-    needs: lint-frontend
+    needs: test-frontend
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
@@ -102,6 +118,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        
+    - name: Cache Node.js dependencies
+      uses: actions/cache@v3
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
         
     - name: Build frontend
       run: |
@@ -116,7 +140,7 @@ jobs:
         path: frontend/dist/
 
   deploy:
-    needs: [build-and-push, build-frontend]
+    needs: [build-backend, build-frontend]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
@@ -133,8 +157,8 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd ~/apps/fms
-          docker compose -f docker-compose.deploy.yml pull
-          docker compose -f docker-compose.deploy.yml up -d
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
           docker system prune -f
           
     - name: Download frontend build

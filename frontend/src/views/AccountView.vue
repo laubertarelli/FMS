@@ -32,7 +32,7 @@ async function logout() {
         if (window.updateAuthState) {
             window.updateAuthState();
         }
-        router.replace("/");
+        router.replace({ name: "Login" });
     } catch (e) {
         console.log(e);
     }

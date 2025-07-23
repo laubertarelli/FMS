@@ -171,7 +171,7 @@ router.beforeEach((to) => {
     if (to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password" && !getToken()) {
         return { name: "Login" }
     }
-    if (getToken && (to.name === "Login" || to.name === "Signup" || to.name === "Forgot Password")) {
+    if (getToken() && (to.name === "Login" || to.name === "Signup" || to.name === "Forgot Password")) {
         return { name: "Home" }
     }
 });

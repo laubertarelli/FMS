@@ -18,7 +18,7 @@ async function login() {
         if (window.updateAuthState) {
             window.updateAuthState();
         }
-        router.replace("/home");
+        router.replace({ name: "Home" });
     }
 }
 </script>

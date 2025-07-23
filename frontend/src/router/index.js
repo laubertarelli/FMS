@@ -19,6 +19,12 @@ import ManageClaims from "@/components/users/ManageClaims.vue";
 const routes = [
     {
         path: "/",
+        name: "Home",
+        redirect: "/files/1", // Redirige a la primera página de archivos
+        //component: HomeView
+    },
+    {
+        path: "/login",
         name: "Login",
         component: Login
     },
@@ -26,12 +32,6 @@ const routes = [
         path: "/signup",
         name: "Signup",
         component: SignUp
-    },
-    {
-        path: "/home",
-        name: "Home",
-        redirect: "/files/1", // Redirige a la primera página de archivos
-        //component: HomeView
     },
     {
         path: "/files/:page",
@@ -170,6 +170,9 @@ const canCreate = () => {
 router.beforeEach((to) => {
     if (to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password" && !getToken()) {
         return { name: "Login" }
+    }
+    if (getToken && (to.name === "Login" || to.name === "Signup" || to.name === "Forgot Password")) {
+        return { name: "Home" }
     }
 });
 

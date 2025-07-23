@@ -26,7 +26,7 @@ async function update() {
 
 async function logout() {
     try {
-        await http.post("logout");
+        await http.logout();
         localStorage.removeItem("token");
         // Notificar al App.vue que el estado de autenticación cambió
         if (window.updateAuthState) {

@@ -15,7 +15,7 @@ export const modals = reactive({
 });
 
 const handleResponse = (response) => {
-    modals.message = response.data;
+    modals.message = response.data ?? "";
     modals.successModal = true;
 };
 
@@ -52,6 +52,10 @@ export default {
     },
     async login(data) {
         return await axios.post(`${API_URL}login`, data)
+            .catch((error) => handleError(error));
+    },
+    async logout() {
+        return await axios.post(`${API_URL}logout`, {}, { headers: getHeaders() })
             .catch((error) => handleError(error));
     }
 }

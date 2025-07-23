@@ -15,7 +15,7 @@ const props = defineProps({
     }
 });
 
-const type = props.message.match(/(?<=\s)\w+/)[0];
+const type = props.message.match(/(?<=\s)\w+/)?.[0] ?? '';
 const router = useRouter();
 const successModalRef = ref(null);
 

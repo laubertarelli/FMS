@@ -1,6 +1,0 @@
-import { reactive } from "vue";
-
-export default reactive({
-    //token: ""
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyYzFlZjMzYy03MTUyLTQ3NzctODE3Mi05ZDA2MzllYTg2ZDgiLCJ1bmlxdWVfbmFtZSI6ImxhdXRhYmVyOSIsImVtYWlsIjoibGF1dGFiZXI5QGdtYWlsLmNvbSIsInBlcm1pc3Npb24iOlsiY3JlYXRlIiwidXBkYXRlIiwiZGVsZXRlIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTczODkxNDg3NCwiZXhwIjoxNzM5MDAxMjc0LCJpYXQiOjE3Mzg5MTQ4NzR9.9nR_qaE6YDHjqpZtaBUY144ke3kAglBm0Io-VxSOSD4"
-});

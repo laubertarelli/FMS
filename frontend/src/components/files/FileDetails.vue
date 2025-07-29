@@ -19,7 +19,7 @@ onMounted(async () => {
         const result = await http.get("files/states");
         states.splice(0, states.length, ...result.data);
     } catch {
-        router.replace("/files/1");
+        router.replace({ name: "Files", params: { page: 1 } });
     }
 });
 

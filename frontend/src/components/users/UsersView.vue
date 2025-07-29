@@ -31,16 +31,16 @@ onMounted(async () => {
             if (window.updateAuthState) {
                 window.updateAuthState();
             }
-            router.push('/');
+            router.replace({ name: "Home" });
         }
     }
 });
 
 function redirect() { // VER SI SE PUEDE IMPLEMENTAR EN ROUTER/INDEX.JS
     if (page.value < 1)
-        router.push(`/users/1`);
+        router.push({ name: "Users", params: { page: 1 } });
     if (totalPages.value > 0 && page.value > totalPages.value)
-        router.push(`/users/${totalPages.value}`);
+        router.push({ name: "Users", params: { page: totalPages.value } });
 };
 
 const handleDeleteClick = (id) => {

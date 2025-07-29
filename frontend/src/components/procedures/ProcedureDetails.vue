@@ -19,7 +19,7 @@ onMounted(async () => {
         const result = await http.get("procedures/labels");
         labels.splice(0, labels.length, ...result.data);
     } catch {
-        router.replace("/procedures/1");
+        router.replace({ name: "Procedures", params: { id: 1 } });
     }
 });
 

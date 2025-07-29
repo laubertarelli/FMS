@@ -16,7 +16,7 @@ onMounted(async () => {
         user.value = (await http.get(`users/details/${id}`)).data;
         user.value.id = id;
     } catch {
-        router.replace("/users/1");
+        router.replace({ name: "Users", params: { id: 1 } });
     }
 });
 

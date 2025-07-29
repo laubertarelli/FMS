@@ -45,7 +45,7 @@ const handleClose = (event) => {
 
 function redirect() {
     if (type == "account") {
-        router.replace("/account");
+        router.replace({ name : "Account"});
     } else {
         router.replace(`/${type}s/1`);
     }

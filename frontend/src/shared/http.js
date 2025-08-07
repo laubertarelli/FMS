@@ -20,13 +20,25 @@ const handleResponse = (response) => {
 };
 
 const handleError = (error) => {
-    const data = error.response?.data || "An unexpected error occurred";
-    modals.message = data;
-    if (data.errors !== undefined) {
-        modals.message = Object.entries(data.errors)
-            // eslint-disable-next-line no-unused-vars
-            .map(([key, value]) => `${Array.isArray(value) ? value.join(", ") : value}`)
-            .join("\n");
+    if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        if (window.updateAuthState) {
+            window.updateAuthState();
+        }
+        modals.message = "Session expired. Please log in again.";
+        modals.errorModal = true;
+        return;
+    }
+    modals.message = "An unexpected error occurred";
+    if (error.response?.data) {
+        const data = error.response.data;
+        modals.message = data;
+        if (data.errors !== undefined) {
+            modals.message = Object.entries(data.errors)
+                // eslint-disable-next-line no-unused-vars
+                .map(([key, value]) => `${Array.isArray(value) ? value.join(", ") : value}`)
+                .join("\n");
+        }
     }
     modals.errorModal = true;
 };
@@ -41,7 +53,7 @@ export default {
             .then((response) => handleResponse(response))
             .catch((error) => handleError(error));
     },
-    async put(url, data){
+    async put(url, data) {
         return await axios.put(`${API_URL}${url}`, data, { headers: getHeaders() })
             .then((response) => handleResponse(response))
             .catch((error) => handleError(error));

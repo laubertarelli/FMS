@@ -21,19 +21,13 @@ onMounted(async () => {
         totalFiles.value = (await http.get("files/count")).data;
         totalPages.value = Math.ceil(totalFiles.value / 5.0);
         redirect();
+        
         const result = await http.get(`files/${page.value}`);
-        files.splice(0, files.length, ...result.data);
-    } catch (e) {
-        console.error(e);
-        // Si hay error de autenticación, redirigir al login
-        if (e.response?.status === 401) {
-            localStorage.removeItem('token');
-            // Notificar al App.vue que el estado de autenticación cambió
-            if (window.updateAuthState) {
-                window.updateAuthState();
-            }
-            router.replace({ name: "Home" });
+        if (result !== undefined) {
+            files.splice(0, files.length, ...result.data);
         }
+    } catch(e) {
+        console.error(e);
     }
 });
 

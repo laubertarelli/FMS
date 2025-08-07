@@ -1,4 +1,4 @@
-﻿namespace Backend.Dtos.User
+﻿namespace Backend.Dtos.Admin
 {
     public class AdminClaimsDto
     {

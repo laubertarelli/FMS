@@ -14,7 +14,28 @@ import ProceduresByFileId from "@/components/procedures/ProceduresByFileId.vue";
 import SignUp from "@/components/SignUp.vue";
 import ForgotPassword from "@/components/ForgotPassword.vue";
 import PageNotFound from "@/components/PageNotFound.vue";
-import ManageClaims from "@/components/users/ManageClaims.vue";
+//import ManageClaims from "@/components/users/ManageClaims.vue";
+import ManageClaimsOp from "@/components/users/ManageClaimsOp.vue";
+
+const getToken = () => localStorage.getItem("token");
+
+function getTokenPayload() {
+    var base64Url = getToken().split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
+
+const isAdmin = () => getTokenPayload().role === "admin";
+const canCreate = () => {
+    const permissions = getTokenPayload().permissions;
+    if (!permissions) return false;
+
+    return permissions.includes("create");
+};
 
 const routes = [
     {
@@ -48,14 +69,7 @@ const routes = [
     {
         path: "/files/add",
         name: "Add File",
-        component: AddFile,
-        beforeEnter: (to, from, next) => {
-            if (!canCreate()) {
-                next({ name: "Files" });
-            } else {
-                next();
-            }
-        }
+        component: AddFile
     },
     {
         path: "/procedures/:page",
@@ -78,53 +92,25 @@ const routes = [
     {
         path: "/procedures/add",
         name: "Add Procedure",
-        component: AddProcedure,
-        beforeEnter: (to, from, next) => {
-            if (!canCreate()) {
-                next({ name: "Procedures" });
-            } else {
-                next();
-            }
-        }
+        component: AddProcedure
     },
     {
         path: "/users/:page",
         name: "Users",
         props: true,
-        component: UsersView,
-        beforeEnter: (to, from, next) => {
-            if (!isAdmin()) {
-                next({ name: "Home" });
-            } else {
-                next();
-            }
-        }
+        component: UsersView
     },
     {
         path: "/users/details/:id",
         name: "User Details",
         props: true,
-        component: UserDetails,
-        beforeEnter: (to, from, next) => { 
-            if (!isAdmin()) {
-                next({ name: "Home" });
-            } else {
-                next();
-            }
-        }
+        component: UserDetails
     },
     {
-        path: "/users/claims/:id",
+        path: "/users/details/:id/claims",
         name: "Manage Claims",
         props: true,
-        component: ManageClaims,
-        beforeEnter: (to, from, next) => { 
-            if (!isAdmin()) {
-                next({ name: "Home" });
-            } else {
-                next();
-            }
-        }
+        component: ManageClaimsOp
     },
     {
         path: "/account/forgot-password",
@@ -148,31 +134,24 @@ const router = createRouter({
     history: createWebHistory()
 });
 
-const getToken = () => localStorage.getItem("token");
-function getTokenPayload() {
-    var base64Url = getToken().split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-};
-
-const isAdmin = () => getTokenPayload().role === "admin";
-const canCreate = () => {
-    const permissions = getTokenPayload().permissions;
-    if (!permissions) return false;
-
-    return permissions.includes("create");
-};
-
 router.beforeEach((to) => {
-    if (to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password" && !getToken()) {
+    if (!getToken() && to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password") {
         return { name: "Login" }
     }
     if (getToken() && (to.name === "Login" || to.name === "Signup" || to.name === "Forgot Password")) {
         return { name: "Home" }
+    }
+
+    const adminRoutes = ["Users", "User Details", "Manage Claims"];
+    if (adminRoutes.includes(to.name) && !isAdmin()) {
+        return { name: "Home" };
+    }
+
+    if (to.name === "Add File" && !canCreate()) {
+        return { name: "Files", params: { page: 1 } };
+    }
+    if (to.name === "Add Procedure" && !canCreate()) {
+        return { name: "Procedures", params: { page: 1 } };
     }
 });
 

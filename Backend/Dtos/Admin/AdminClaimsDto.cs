@@ -3,6 +3,6 @@
     public class AdminClaimsDto
     {
         public string UserId { get; set; } = "";
-        public List<ClaimSelectedDto> Claims { get; set; } = [];
+        public List<PermissionSelectedDto> Permissions { get; set; } = [];
     }
 }

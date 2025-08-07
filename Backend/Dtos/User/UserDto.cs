@@ -11,7 +11,7 @@ namespace Backend.Dtos.User
         public string LastName { get; set; } = "";
         public int Files { get; set; }
         public int Procedures { get; set; }
-        public IList<Claim> Claims { get; set; } = [];
+        public List<string> Roles { get; set; } = [];
         public string FullName => $"{FirstName} {LastName}";
     }
 }

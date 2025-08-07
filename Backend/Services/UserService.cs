@@ -40,7 +40,8 @@ namespace Backend.Services
                 .Include(u => u.Files)
                 .Include(u => u.Procedures)
                 .FirstOrDefaultAsync(u => u.Id == userId);
-            return user?.ToUserDto();
+            
+            return user != null ? await user.ToUserDtoAsync(userManager) : null;
         }
 
         public async Task<bool> ResetPassword(ResetPasswordUserDto userDto)
@@ -73,10 +74,13 @@ namespace Backend.Services
                 return null;
             }
 
-            if (userManager.Users.Count() == 1)
+            var admins = await userManager.GetUsersInRoleAsync("superadmin");
+            if (!admins.Any())
             {
-                await userManager.AddToRoleAsync(userModel, "admin");                     // If it's the first user registered, "Admin" role is assigned.
-                await userManager.AddClaimsAsync(userModel, ClaimsStore.GetAllClaims()); // Also claims are added to admin
+                // If no superadmin exists, assign "SuperAdmin" role to this user.
+                await userManager.AddToRolesAsync(userModel, ["superadmin", "admin", "user"]);
+                // Also claims are added to admin
+                await userManager.AddClaimsAsync(userModel, ClaimsStore.GetAllClaims()); 
             }
             else
             {
@@ -101,7 +105,7 @@ namespace Backend.Services
             user.LastName = userDto.LastName;
 
             var result = await userManager.UpdateAsync(user);
-            return result.Succeeded ? user.ToUserDto() : null;
+            return result.Succeeded ? await user.ToUserDtoAsync(userManager) : null;
         }
     }
 }

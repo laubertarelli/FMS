@@ -1,12 +1,15 @@
 ﻿using Backend.Dtos.User;
 using Backend.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Mappers
 {
     public static class UserMapper
     {
-        public static UserDto ToUserDto(this User userModel)
+        public static async Task<UserDto> ToUserDtoAsync(this User userModel, UserManager<User> userManager)
         {
+            var roles = await userManager.GetRolesAsync(userModel);
+            
             return new UserDto
             {
                 Id = userModel.Id,
@@ -15,7 +18,8 @@ namespace Backend.Mappers
                 FirstName = userModel.FirstName,
                 LastName = userModel.LastName,
                 Files = userModel.Files.Count,
-                Procedures = userModel.Procedures.Count
+                Procedures = userModel.Procedures.Count,
+                Roles = roles.ToList()
             };
         }
 

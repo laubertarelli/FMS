@@ -11,8 +11,11 @@ namespace Backend.Interfaces.Services
         Task<List<UserDto>> GetAll(int page);
         Task<UserDto?> GetById(string id);
         Task<int> CountAll();
-        List<ClaimDto> GetAllClaims();
+        List<PermissionDto> GetAllClaims();
+        List<PermissionDto> GetAllRoles();
         Task<IList<Claim>?> GetUserClaims(string id);
+        Task<IList<string>?> GetUserRoles(string id);
         Task<IList<Claim>?> ManageUserClaims(AdminClaimsDto claimsDto);
+        Task<IList<string>?> ManageUserRoles(AdminClaimsDto userDto);
     }
 }

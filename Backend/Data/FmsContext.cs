@@ -57,20 +57,45 @@ namespace Backend.Data
             [
                 new IdentityRole
                 {
+                    Id = "1",
+                    Name = "superadmin",
+                    NormalizedName = "SUPERADMIN"
+                },
+                new IdentityRole
+                {
+                    Id = "2", 
                     Name = "admin",
                     NormalizedName = "ADMIN"
                 },
                 new IdentityRole
                 {
+                    Id = "3",
                     Name = "user",
                     NormalizedName = "USER"
                 }
             ];
             modelBuilder.Entity<IdentityRole>().HasData(roles);
+        }
 
-            if (Database.GetPendingMigrations().Any())
+        public void EnsureDatabaseMigrated()
+        {
+            try
             {
-                Database.Migrate();
+                if (Database.GetPendingMigrations().Any())
+                {
+                    Console.WriteLine("Applying pending migrations...");
+                    Database.Migrate();
+                    Console.WriteLine("Migrations applied successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("No pending migrations.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error applying migrations: {ex.Message}");
+                throw; // Re-throw para que la aplicación no inicie con una DB en mal estado
             }
         }
 

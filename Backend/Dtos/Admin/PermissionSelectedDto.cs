@@ -1,8 +1,8 @@
 ﻿namespace Backend.Dtos.Admin
 {
-    public class ClaimSelectedDto
+    public class PermissionSelectedDto
     {
-        public string ClaimValue { get; set; } = "";
+        public string PermissionValue { get; set; } = "";
         public bool IsSelected { get; set; } = false;
     }
 }

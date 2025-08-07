@@ -1,5 +1,4 @@
-﻿using Backend.Dtos.User;
-using Backend.Dtos.Admin;
+﻿using Backend.Dtos.Admin;
 using Backend.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@ namespace Backend.Controllers
 {
     [ApiController]
     [Route("users")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, superadmin")]
     public class AdminController(IAdminService service) : ControllerBase
     {
         [HttpPut]
@@ -53,6 +52,13 @@ namespace Backend.Controllers
             return Ok(claims);
         }
 
+        [HttpGet("roles")]
+        public IActionResult GetAllRoles()
+        {
+            var roles = service.GetAllRoles();
+            return Ok(roles);
+        }
+
         [HttpGet("claims/{id}")]
         public async Task<IActionResult> GetUserClaims([FromRoute] string id)
         {
@@ -60,11 +66,25 @@ namespace Backend.Controllers
             return (claims is null) ? NotFound() : Ok(claims);
         }
 
+        [HttpGet("roles/{id}")]
+        public async Task<IActionResult> GetUserRoles([FromRoute] string id)
+        {
+            var roles = await service.GetUserRoles(id);
+            return (roles is null) ? NotFound() : Ok(roles);
+        }
+
         [HttpPut("claims")]
         public async Task<IActionResult> ManageUserClaims([FromBody] AdminClaimsDto userDto)
         {
             var claims = await service.ManageUserClaims(userDto);
             return (claims is null) ? NotFound() : Ok(claims);
+        }
+
+        [HttpPut("roles")]
+        public async Task<IActionResult> ManageUserRoles([FromBody] AdminClaimsDto userDto)
+        {
+            var roles = await service.ManageUserRoles(userDto);
+            return (roles is null) ? NotFound() : Ok(roles);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Backend.Dtos.Admin;
 using Backend.Dtos.User;
 using ClaimEnum = Backend.Enums.Claim;
+using RoleEnum = Backend.Enums.Role;
 using Backend.Interfaces.Services;
 using Backend.Mappers;
 using Backend.Models;
@@ -34,10 +35,17 @@ namespace Backend.Services
             var users = await userManager.Users
                 .Include(u => u.Files)
                 .Include(u => u.Procedures)
+                .OrderBy(u => u.Id)
                 .Skip((page - 1) * 5)
                 .Take(5)
                 .ToListAsync();
-            return users.Select(u => u.ToUserDto()).ToList();
+
+            var userDtos = new List<UserDto>();
+            foreach (var user in users)
+            {
+                userDtos.Add(await user.ToUserDtoAsync(userManager));
+            }
+            return userDtos;
         }
 
         public async Task<UserDto?> GetById(string id)
@@ -46,13 +54,20 @@ namespace Backend.Services
                 .Include(u => u.Files)
                 .Include(u => u.Procedures)
                 .FirstOrDefaultAsync(u => u.Id == id);
-            return user?.ToUserDto();
+            return user != null ? await user.ToUserDtoAsync(userManager) : null;
         }
 
-        public List<ClaimDto> GetAllClaims()
+        public List<PermissionDto> GetAllClaims()
         {
             return ((ClaimEnum[])Enum.GetValues(typeof(ClaimEnum)))
-                .Select(c => new ClaimDto() { Value = (int)c, Name = c.ToString() })
+                .Select(c => new PermissionDto() { Value = (int)c, Name = c.ToString() })
+                .ToList();
+        }
+
+        public List<PermissionDto> GetAllRoles()
+        {
+            return ((RoleEnum[])Enum.GetValues(typeof(RoleEnum)))
+                .Select(r => new PermissionDto() { Value = (int)r, Name = r.ToString().ToLower() })
                 .ToList();
         }
 
@@ -67,6 +82,17 @@ namespace Backend.Services
             return await userManager.GetClaimsAsync(user);
         }
 
+        public async Task<IList<string>?> GetUserRoles(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if (user is null)
+            {
+                return null;
+            }
+
+            return await userManager.GetRolesAsync(user);
+        }
+
         public async Task<IList<Claim>?> ManageUserClaims(AdminClaimsDto userDto)
         {
             var user = await userManager.FindByIdAsync(userDto.UserId);
@@ -75,19 +101,56 @@ namespace Backend.Services
                 return null;
             }
 
+            const string CLAIM_TYPE = "permissions";
             var existingClaims = await userManager.GetClaimsAsync(user);
-            foreach (var newClaim in userDto.Claims)
+            var existingClaimValues = existingClaims
+                .Where(c => c.Type == CLAIM_TYPE)
+                .Select(c => c.Value)
+                .ToHashSet();
+
+            foreach (var newClaim in userDto.Permissions)
             {
-                if (!existingClaims.Any(c => c.Value == newClaim.ClaimValue) && newClaim.IsSelected)
+                var hasExistingClaim = existingClaimValues.Contains(newClaim.PermissionValue);
+
+                if (!hasExistingClaim && newClaim.IsSelected)
                 {
-                    await userManager.AddClaimAsync(user, new Claim("permissions", newClaim.ClaimValue));
+                    await userManager.AddClaimAsync(user, new Claim(CLAIM_TYPE, newClaim.PermissionValue));
                 }
-                else if (existingClaims.Any(c => c.Value == newClaim.ClaimValue) && !newClaim.IsSelected)
+                else if (hasExistingClaim && !newClaim.IsSelected)
                 {
-                    await userManager.RemoveClaimAsync(user, new Claim("permissions", newClaim.ClaimValue));
+                    await userManager.RemoveClaimAsync(user, new Claim(CLAIM_TYPE, newClaim.PermissionValue));
                 }
             }
+
             return await userManager.GetClaimsAsync(user);
+        }
+
+        public async Task<IList<string>?> ManageUserRoles(AdminClaimsDto userDto)
+        {
+            var user = await userManager.FindByIdAsync(userDto.UserId);
+            if (user is null)
+            {
+                return null;
+            }
+
+            var existingRoles = await userManager.GetRolesAsync(user);
+        
+            foreach (var role in userDto.Permissions)
+            {
+                var roleNameLower = role.PermissionValue.ToLower();
+                var hasExistingRole = existingRoles.Contains(roleNameLower);
+                
+                if (!hasExistingRole && role.IsSelected)
+                {
+                    await userManager.AddToRoleAsync(user, roleNameLower);
+                }
+                else if (hasExistingRole && !role.IsSelected)
+                {
+                    await userManager.RemoveFromRoleAsync(user, roleNameLower);
+                }
+            }
+
+            return await userManager.GetRolesAsync(user);
         }
 
         public async Task<UserDto?> Update(UpdateAdminDto updateDto)
@@ -104,7 +167,7 @@ namespace Backend.Services
             user.LastName = updateDto.LastName;
 
             var result = await userManager.UpdateAsync(user);
-            return result.Succeeded ? user.ToUserDto() : null;
+            return result.Succeeded ? await user.ToUserDtoAsync(userManager) : null;
         }
     }
 }

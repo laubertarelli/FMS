@@ -1,3 +1,4 @@
+using Backend.Data;
 using Backend.Services;
 using dotenv.net;
 using System.Text.Json.Serialization;
@@ -16,6 +17,13 @@ builder.Services.AddEndpointsApiExplorer()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
+
+// Aplicar migraciones automáticamente
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<FmsContext>();
+    context.EnsureDatabaseMigrated();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

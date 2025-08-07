@@ -44,7 +44,10 @@ namespace Backend.Services
             claims.AddRange(userClaims);
 
             var roles = await userManager.GetRolesAsync(user);
-            claims.Add(new Claim(ClaimTypes.Role, roles[0]));
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             return claims;
         }

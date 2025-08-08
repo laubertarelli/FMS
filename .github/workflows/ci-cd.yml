@@ -1,3 +1,6 @@
+# ARCHIVO CI-CD LIMPIO (para usar después del primer deploy exitoso)
+# Reemplazar .github/workflows/ci-cd.yml con este contenido
+
 name: CI/CD Pipeline
 
 on:
@@ -146,17 +149,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Upload role configuration
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        source: "Backend/cleanup-roles.sh,Backend/role-config.sh"
-        target: "~/apps/fms/"
-        strip_components: 1
-        overwrite: true
-    
     - name: Deploy backend
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -165,28 +157,9 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd ~/apps/fms
-          
-          # Aplicar configuración de roles (ejecución única)
-          echo "🔧 Aplicando configuración de roles..."
           docker compose pull
           docker compose up -d --build
-          
-          # Esperar que la aplicación esté lista
-          echo "⏳ Esperando que la aplicación inicie..."
-          sleep 20
-          
-          # Ejecutar limpieza de roles
-          if [ -f "cleanup-roles.sh" ]; then
-            chmod +x cleanup-roles.sh
-            ./cleanup-roles.sh
-          else
-            echo "⚠️ cleanup-roles.sh no encontrado"
-          fi
-          
-          # Limpieza del sistema
           docker system prune -f
-          
-          echo "✅ Deploy completado con configuración de roles"
           
     - name: Download frontend build
       uses: actions/download-artifact@v4

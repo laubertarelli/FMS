@@ -27,16 +27,22 @@ echo "   Otros usuarios: user (automático)"
 echo ""
 
 # Verificar que docker-compose esté disponible
-if ! command -v docker-compose &> /dev/null; then
-    echo "❌ docker-compose no encontrado"
+if command -v docker-compose &> /dev/null; then
+    DOCKER_COMPOSE="docker-compose"
+elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
+    DOCKER_COMPOSE="docker compose"
+else
+    echo "❌ Ni docker-compose ni docker compose encontrados"
     exit 1
 fi
 
+echo "📋 Usando: $DOCKER_COMPOSE"
+
 echo "📥 Descargando nueva imagen..."
-docker-compose -f docker-compose.deploy.yml pull fms-api
+$DOCKER_COMPOSE -f docker-compose.yml pull fms-api
 
 echo "⏸️  Deteniendo aplicación (manteniendo base de datos)..."
-docker-compose -f docker-compose.deploy.yml stop fms-api
+$DOCKER_COMPOSE -f docker-compose.yml stop fms-api
 
 echo "🧹 Limpiando roles antiguos..."
 docker exec -i fms-db psql -U laubertarelli -d fms << 'EOSQL'
@@ -60,12 +66,12 @@ DELETE FROM "AspNetRoles";
 EOSQL
 
 echo "🚀 Reiniciando aplicación con roles corregidos..."
-docker-compose -f docker-compose.deploy.yml up -d fms-api
+$DOCKER_COMPOSE -f docker-compose.yml up -d fms-api
 
 echo "⏳ Esperando que la aplicación inicie y aplique migraciones..."
 sleep 15
 
-echo "� Aplicando roles a usuarios existentes..."
+echo "🔧 Aplicando roles a usuarios existentes..."
 
 # Función para asignar rol a usuario por email
 assign_role_by_email() {
@@ -96,20 +102,6 @@ BEGIN
 END
 \$\$;
 EOSQL
-}
-
-# Asignar SuperAdmin roles
-for email in "${SUPERADMIN_EMAILS[@]}"; do
-    echo "� Asignando SuperAdmin a: $email"
-    assign_role_by_email "$email" "superadmin"
-done
-
-# Asignar Admin roles
-for email in "${ADMIN_EMAILS[@]}"; do
-    echo "🛡️  Asignando Admin a: $email"
-    assign_role_by_email "$email" "admin"
-done
-
 }
 
 # PRIMERO: Asignar rol 'user' a TODOS los usuarios (base obligatoria)

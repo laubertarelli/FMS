@@ -1,8 +1,8 @@
 bin
 obj
 ToDo.txt
-role-config.sh
-cleanup-roles.sh
+Backend/role-config.sh
+Backend/cleanup-roles.sh
 
 # dotenv files
 .env

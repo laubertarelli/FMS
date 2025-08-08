@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import http from "@/shared/http";
+import { setToken } from "@/shared/auth";
 
 const email = ref("");
 const password = ref("");
@@ -13,7 +14,7 @@ async function login() {
         password: password.value
     });
     if (response?.status === 200) {
-        localStorage.setItem("token", response.data.token);
+        setToken(response.data.token);
         // Notificar al App.vue que el estado de autenticación cambió
         if (window.updateAuthState) {
             window.updateAuthState();

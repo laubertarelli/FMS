@@ -2,6 +2,7 @@
 import http from "@/shared/http";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { removeToken } from "@/shared/auth";
 
 const router = useRouter();
 const user = ref({});
@@ -27,7 +28,7 @@ async function update() {
 async function logout() {
     try {
         await http.logout();
-        localStorage.removeItem("token");
+        removeToken();
         // Notificar al App.vue que el estado de autenticación cambió
         if (window.updateAuthState) {
             window.updateAuthState();

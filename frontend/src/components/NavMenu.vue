@@ -1,16 +1,5 @@
 <script setup>
-const getToken = () => localStorage.getItem("token");
-function getTokenPayload() {
-    var base64Url = getToken().split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-};
-
-const isAdmin = getTokenPayload().role === "admin";
+import { isAdmin } from '@/shared/auth';
 </script>
 
 <template>
@@ -23,7 +12,7 @@ const isAdmin = getTokenPayload().role === "admin";
                 <li>
                     <RouterLink to="/procedures/1">Procedures</RouterLink>
                 </li>
-                <li v-if="isAdmin">
+                <li v-if="isAdmin()">
                     <RouterLink to="/users/1">Users</RouterLink>
                 </li>
             </ul>

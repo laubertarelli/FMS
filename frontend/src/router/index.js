@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-//import HomeView from "@/views/HomeView.vue";
+import { isAuthenticated, isAdmin, canCreate } from "@/shared/auth";
+import HomeView from "@/views/HomeView.vue";
 import FilesView from "@/components/files/FilesView.vue";
 import ProceduresView from "@/components/procedures/ProceduresView.vue";
 import UsersView from "@/components/users/UsersView.vue";
@@ -17,32 +18,12 @@ import PageNotFound from "@/components/PageNotFound.vue";
 //import ManageClaims from "@/components/users/ManageClaims.vue";
 import ManageClaimsOp from "@/components/users/ManageClaimsOp.vue";
 
-const getToken = () => localStorage.getItem("token");
-
-function getTokenPayload() {
-    var base64Url = getToken().split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-};
-
-const isAdmin = () => getTokenPayload().role === "admin";
-const canCreate = () => {
-    const permissions = getTokenPayload().permissions;
-    if (!permissions) return false;
-
-    return permissions.includes("create");
-};
-
 const routes = [
     {
         path: "/",
         name: "Home",
         redirect: "/files/1", // Redirige a la primera página de archivos
-        //component: HomeView
+        component: HomeView
     },
     {
         path: "/login",
@@ -135,23 +116,30 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-    if (!getToken() && to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password") {
+    // Check authentication - call functions properly
+    if (!isAuthenticated() && to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password") {
         return { name: "Login" }
     }
-    if (getToken() && (to.name === "Login" || to.name === "Signup" || to.name === "Forgot Password")) {
+    if (isAuthenticated() && (to.name === "Login" || to.name === "Signup" || to.name === "Forgot Password")) {
         return { name: "Home" }
     }
 
+    // Admin-only routes
     const adminRoutes = ["Users", "User Details", "Manage Claims"];
-    if (adminRoutes.includes(to.name) && !isAdmin()) {
+    if (!isAdmin() && adminRoutes.includes(to.name)) {
         return { name: "Home" };
     }
 
-    if (to.name === "Add File" && !canCreate()) {
-        return { name: "Files", params: { page: 1 } };
-    }
-    if (to.name === "Add Procedure" && !canCreate()) {
-        return { name: "Procedures", params: { page: 1 } };
+    // Permission-based route protection
+    const createRoutes = ["Add File", "Add Procedure"];
+    if (!canCreate() && createRoutes.includes(to.name)) {
+        // Redirect to appropriate listing page based on route
+        if (to.name === "Add File") {
+            return { name: "Files", params: { page: 1 } };
+        }
+        if (to.name === "Add Procedure") {
+            return { name: "Procedures", params: { page: 1 } };
+        }
     }
 });
 

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { isAuthenticated, isAdmin, canCreate } from "@/shared/auth";
+import { isAuthenticated, isAdmin, isGuest, canCreate } from "@/shared/auth";
 import HomeView from "@/views/HomeView.vue";
 import FilesView from "@/components/files/FilesView.vue";
 import ProceduresView from "@/components/procedures/ProceduresView.vue";
@@ -126,7 +126,7 @@ router.beforeEach((to) => {
 
     // Admin-only routes
     const adminRoutes = ["Users", "User Details", "Manage Claims"];
-    if (!isAdmin() && adminRoutes.includes(to.name)) {
+    if (!isAdmin() && !isGuest() && adminRoutes.includes(to.name)) {
         return { name: "Home" };
     }
 

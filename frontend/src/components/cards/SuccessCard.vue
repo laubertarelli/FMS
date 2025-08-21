@@ -26,13 +26,13 @@ onUnmounted(() => {
     document.removeEventListener("keyup", handleClose);
 });
 
-const closeAndReset = () => {
+const closeModal = () => {
     emits("update:modelValue", false);
     emits("resetMessage");
 };
 
-const closeModal = () => {
-    closeAndReset();
+const closeAndReset = () => {
+    closeModal();
     window.location.reload();
 };
 onClickOutside(successModalRef, closeModal);

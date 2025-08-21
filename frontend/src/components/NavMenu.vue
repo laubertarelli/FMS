@@ -1,5 +1,23 @@
 <script setup>
-import { isAdmin } from '@/shared/auth';
+import { isAdmin, isGuest, removeToken } from '@/shared/auth';
+import { useRouter } from 'vue-router';
+import http from '@/shared/http';
+
+const router = useRouter();
+
+async function logout() {
+    try {
+        await http.logout();
+        removeToken();
+        // Notificar al App.vue que el estado de autenticación cambió
+        if (window.updateAuthState) {
+            window.updateAuthState();
+        }
+        router.replace({ name: "Login" });
+    } catch (e) {
+        console.log(e);
+    }
+}
 </script>
 
 <template>
@@ -12,11 +30,12 @@ import { isAdmin } from '@/shared/auth';
                 <li>
                     <RouterLink to="/procedures/1">Procedures</RouterLink>
                 </li>
-                <li v-if="isAdmin()">
+                <li v-if="isAdmin() || isGuest()">
                     <RouterLink to="/users/1">Users</RouterLink>
                 </li>
             </ul>
-            <RouterLink :to="{ name: 'Account' }"><button class="btn-header">Account</button></RouterLink>
+            <RouterLink v-if="!isGuest()" :to="{ name: 'Account' }"><button class="btn-header">Account</button></RouterLink>
+            <button v-else @click="logout" class="btn btn-danger p-2 logout">Log out</button>
         </nav>
     </div>
 </template>
@@ -63,5 +82,10 @@ import { isAdmin } from '@/shared/auth';
 
 .btn-header:hover {
     background-color: #0b5ed7;
+}
+
+.logout {
+    width: 94px;
+    margin-left: 1rem;
 }
 </style>

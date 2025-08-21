@@ -10,17 +10,14 @@ namespace Backend.Services
 {
     public class TokenService(IConfiguration configuration, UserManager<User> userManager) : ITokenService
     {
-        public async Task<string> CreateToken(User user)
+        private string GetToken(List<Claim> claims)
         {
-            // User info for token
-            var userClaims = await GetClaims(user);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT_KEY"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-            // Token details
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(userClaims),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = credentials
             };
@@ -30,7 +27,7 @@ namespace Backend.Services
             return handler.WriteToken(token);
         }
 
-        public async Task<List<Claim>> GetClaims(User user)
+        private async Task<List<Claim>> GetClaims(User user)
         {
             var options = new IdentityOptions();
             var claims = new List<Claim>
@@ -50,6 +47,23 @@ namespace Backend.Services
             }
 
             return claims;
+        }
+        
+        public async Task<string> CreateToken(User user)
+        {
+            // User info for token
+            var userClaims = await GetClaims(user);
+            return GetToken(userClaims);
+        }
+
+        public string CreateGuestToken()
+        {
+            var guestClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, "guest"),
+                new Claim(ClaimTypes.Role, "user")
+            };
+            return GetToken(guestClaims);
         }
     }
 }

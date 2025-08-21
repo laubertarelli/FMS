@@ -6,6 +6,7 @@ namespace Backend.Interfaces.Services
     {
         Task<NewUserDto?> Signup(SignupUserDto signupDto);
         Task<NewUserDto?> Login(LoginUserDto loginDto);
+        Task<NewUserDto> LoginAsGuest();
         Task<bool> Logout();
         Task<bool> ResetPassword(ResetPasswordUserDto userDto);
         Task<UserDto?> MyAccount(string userId);

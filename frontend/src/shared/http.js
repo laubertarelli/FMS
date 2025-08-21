@@ -11,7 +11,8 @@ const getHeaders = () => {
 export const modals = reactive({
     errorModal: false,
     successModal: false,
-    message: ""
+    message: "",
+    subMessage: ""
 });
 
 const handleResponse = (response) => {
@@ -26,6 +27,12 @@ const handleError = (error) => {
             window.updateAuthState();
         }
         modals.message = "Session expired. Please log in again.";
+        modals.errorModal = true;
+        return;
+    }
+    if (error.response?.status === 403) {
+        modals.message = "You do not have permission to perform this action.";
+        modals.subMessage = "Please contact support if you believe this is an error.";
         modals.errorModal = true;
         return;
     }
@@ -66,8 +73,12 @@ export default {
         return await axios.post(`${API_URL}login`, data)
             .catch((error) => handleError(error));
     },
+    async loginAsGuest() {
+        return await axios.post(`${API_URL}login/guest`)
+            .catch((error) => handleError(error));
+    },
     async logout() {
         return await axios.post(`${API_URL}logout`, {}, { headers: getHeaders() })
             .catch((error) => handleError(error));
-    }
-}
+    },
+};

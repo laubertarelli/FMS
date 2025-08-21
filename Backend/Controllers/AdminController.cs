@@ -7,10 +7,11 @@ namespace Backend.Controllers
 {
     [ApiController]
     [Route("users")]
-    [Authorize(Roles = "admin, superadmin")]
+    [Authorize]
     public class AdminController(IAdminService service) : ControllerBase
     {
         [HttpPut]
+        [Authorize(Roles = "admin, superadmin")]
         public async Task<IActionResult> Update([FromBody] UpdateAdminDto updateDto)
         {
             var user = await service.Update(updateDto);
@@ -18,6 +19,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "admin, superadmin")]
         public async Task<IActionResult> Delete([FromBody] string email)
         {
             var result = await service.Delete(email);
@@ -74,6 +76,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("claims")]
+        [Authorize(Roles = "admin, superadmin")]
         public async Task<IActionResult> ManageUserClaims([FromBody] AdminClaimsDto userDto)
         {
             var claims = await service.ManageUserClaims(userDto);
@@ -81,6 +84,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("roles")]
+        [Authorize(Roles = "admin, superadmin")]
         public async Task<IActionResult> ManageUserRoles([FromBody] AdminClaimsDto userDto)
         {
             var roles = await service.ManageUserRoles(userDto);

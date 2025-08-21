@@ -12,6 +12,10 @@ const props = defineProps({
     message: {
         type: String,
         required: true
+    },
+    subMessage: {
+        type: String,
+        default: "Try again."
     }
 });
 
@@ -53,7 +57,7 @@ const handleClose = (event) => {
         <div class="message-text-container">
             <p class="message-text" v-if="!Array.isArray(message)">{{ props.message }}</p>
             <p class="message-text" v-else v-for="(line, index) in message.split('\n')" :key="index">{{ line }}</p>
-            <p class="sub-text">Try again.</p>
+            <p class="sub-text">{{ props.subMessage }}</p>
         </div>
         <button class="btn" @click="closeModal">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" stroke-width="0" fill="none"

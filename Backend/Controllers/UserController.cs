@@ -26,6 +26,13 @@ namespace Backend.Controllers
             return (user is null) ? NotFound("Email or password invalid.") : Ok(user);
         }
 
+        [HttpPost("login/guest")]
+        public async Task<IActionResult> LoginAsGuest()
+        {
+            var guestUser = await service.LoginAsGuest();
+            return Ok(guestUser);
+        }
+
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {

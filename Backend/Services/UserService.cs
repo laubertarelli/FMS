@@ -28,6 +28,17 @@ namespace Backend.Services
             return userModel.ToNewUserDto(token);
         }
 
+        public async Task<NewUserDto> LoginAsGuest()
+        {
+            var guestToken = tokenService.CreateGuestToken();
+            return await Task.FromResult(new NewUserDto
+            {
+                UserName = "Guest",
+                Email = "guest@localhost",
+                Token = guestToken
+            });
+        }
+
         public async Task<bool> Logout()
         {
             await signInManager.SignOutAsync();

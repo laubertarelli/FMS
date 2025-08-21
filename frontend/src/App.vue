@@ -60,6 +60,7 @@ const resetMessage = () => {
     <ErrorCard v-if="modals.errorModal" 
       v-model="modals.errorModal" 
       :message="modals.message" 
+      :subMessage="modals.subMessage ? modals.subMessage : 'Try again.'"
       @resetMessage="resetMessage" />
   </div>
 </template>

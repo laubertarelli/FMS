@@ -41,10 +41,18 @@ const isAdmin = () => {
     return payload?.role?.includes("admin") ?? false;
 };
 
+const isGuest = () => {
+    const payload = getTokenPayload();
+    return payload && payload.nameid === "guest";
+};
+
 const getPermissions = () => getTokenPayload()?.permissions;
 const canCreate = () => {
     const permissions = getPermissions();
     if (!permissions) return false;
+    
+    // Guests cannot create
+    if (isGuest()) return false;
 
     return permissions.includes("create");
 };
@@ -52,6 +60,9 @@ const canCreate = () => {
 const canUpdate = () => {
     const permissions = getPermissions();
     if (!permissions) return false;
+    
+    // Guests cannot update
+    if (isGuest()) return false;
 
     return permissions.includes("update");
 };
@@ -59,6 +70,9 @@ const canUpdate = () => {
 const canDelete = () => {
     const permissions = getPermissions();
     if (!permissions) return false;
+    
+    // Guests cannot delete
+    if (isGuest()) return false;
 
     return permissions.includes("delete");
 };
@@ -68,6 +82,7 @@ export {
     removeToken,
     isAuthenticated,
     isAdmin,
+    isGuest,
     canCreate,
     canUpdate,
     canDelete

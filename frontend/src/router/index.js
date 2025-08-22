@@ -116,11 +116,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-    // Check authentication - call functions properly
-    if (!isAuthenticated() && to.name !== "Login" && to.name !== "Signup" && to.name !== "Forgot Password") {
+    // Check authentication
+    if (!isAuthenticated() && to.name !== "Login" && to.name !== "Signup") {
         return { name: "Login" }
     }
-    if (isAuthenticated() && (to.name === "Login" || to.name === "Signup" || to.name === "Forgot Password")) {
+    if (isAuthenticated() && (to.name === "Login" || to.name === "Signup")) {
         return { name: "Home" }
     }
 
@@ -132,7 +132,7 @@ router.beforeEach((to) => {
 
     // Permission-based route protection
     const createRoutes = ["Add File", "Add Procedure"];
-    if (!canCreate() && createRoutes.includes(to.name)) {
+    if (!canCreate() && !isGuest() && createRoutes.includes(to.name)) {
         // Redirect to appropriate listing page based on route
         if (to.name === "Add File") {
             return { name: "Files", params: { page: 1 } };
